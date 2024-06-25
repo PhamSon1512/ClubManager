@@ -21,7 +21,7 @@
                         <div class="row">
                             <div class="col-md-5 row">
                                 <div class="col-md-4">
-                                    <h5 class="mb-0">Account</h5>
+                                    <h4 class="mb-0">Account</h4>
                                 </div>
                                 <div class="col-md-7">
                                     <div class="search-bar p-0 d-lg-block ms-2">                                                        
@@ -36,7 +36,7 @@
                                     </div> 
                                 </div>
                             </div>
-                            <div class="col-md-7">
+                            <%--<div class="col-md-7">
                                 <form action="account?action=filter" method="POST" onSubmit="document.getElementById('submit').disabled = true;">
                                     <div class="justify-content-md-end row">
                                         <div class="col-md-5 row align-items-center">
@@ -69,51 +69,52 @@
                                             </div>
                                         </div>
                                     </form>
-                                </div>
+                                </div>--%>
                             </div>
 
 
                             <div class="row">
-                                <div class="col-12 mt-4">
+                                <div class="col-12 mt-3">
                                     <div class="table-responsive bg-white shadow rounded">
                                         <table class="table mb-0 table-center">
                                             <thead>
                                                 <tr>
-                                                    <th class="border-bottom p-3" >Tên tài khoản</th>
-                                                    <th class="border-bottom p-3" >Họ tên</th>
-                                                    <th class="border-bottom p-3" >Giới tính</th>
+                                                    <th class="border-bottom p-3" >Username</th>
+                                                    <th class="border-bottom p-3" >Fullname</th>
                                                     <th class="border-bottom p-3" >Email</th>
-                                                    <th class="border-bottom p-3" >Số điện thoại</th>
-                                                    <th class="border-bottom p-3" >Quyền</th>
-                                                    <th class="border-bottom p-3" >Trạng thái</th>
-                                                    <th class="border-bottom p-3" ></th>
+                                                    <th class="border-bottom p-3" >PhoneNumber </th>
+                                                    <th class="border-bottom p-3" >Role </th>
+                                                    <th class="border-bottom p-3" >Status </th>
+                                                    <th class="border-bottom p-3" > </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             <c:forEach items="${account}" var="a">
                                                 <tr>
                                                     <th class="p-3">${a.username}</th>
-                                                    <td class="p-3">${a.name}</td>
-                                                    <c:if test="${a.gender == true}">
-                                                        <td class="p-3">Nam</td>
-                                                    </c:if>
-                                                    <c:if test="${a.gender == false}">
-                                                        <td class="p-3">Nữ</td>
-                                                    </c:if>
+                                                    <td class="p-3">${a.fullname}</td>
                                                     <td class="p-3">${a.email}</td>
-                                                    <td class="p-3">0${a.phone}</td>
-                                                    <td class="p-3">${a.role.name}</td>
-                                                    <c:if test="${a.status == true}">
-                                                        <td class="p-3">Active</td>
-                                                    </c:if>
-                                                    <c:if test="${a.status == false}">
-                                                        <td class="p-3">Disable</td>
-                                                    </c:if>
+                                                    <td class="p-3">${a.phone_number}</td>
+                                                    <td class="p-3">${a.setting.name}</td>
+                                                    <c:choose>
+                                                        <c:when test="${a.status == 0}">
+                                                            <td class="p-3">Deactivated</td>
+                                                        </c:when>
+                                                        <c:when test="${a.status == 1}">
+                                                            <td class="p-3">Activated</td>
+                                                        </c:when>
+                                                        <c:when test="${a.status == 2}">
+                                                            <td class="p-3">Banned</td>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <td class="p-3">Unknown</td>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                     <td class="text-end p-3">
-                                                        <a href="account?action=detail&username=${a.username}" type="button"class="btn btn-info">Chi tiết</a>
+                                                        <a href="account?action=detail&username=${a.username}" type="button" class="btn btn-info">Chi tiết</a>
                                                     </td>
                                                     <td class="text-end p-3">
-                                                        <a href="#" type="button"class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit${a.username}">Chỉnh sửa</a>
+                                                        <a href="#" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit${a.username}">Chỉnh sửa</a>
                                                     </td>
                                                 </tr>
                                             </c:forEach>
@@ -121,7 +122,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <c:set var="page" value="${page}"/>
+                            <%--<c:set var="page" value="${page}"/>
                             <div class="row text-center">
                                 <div class="col-12 mt-4">
                                     <div class="d-md-flex align-items-center text-center justify-content-between">
@@ -133,6 +134,7 @@
                                     </div>
                                 </div>
                             </div>
+                            --%>
                         </div>
                     </div>
                 </div>

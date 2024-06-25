@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import model.Account;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Setting;
@@ -59,7 +60,7 @@ public class AccountDAO extends DBContext {
                 + "INNER JOIN setting s ON u.setting_id = s.setting_id "
                 + "WHERE u.email = ?";
         try (
-            PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -143,13 +144,13 @@ public class AccountDAO extends DBContext {
         }
     }
 
-    public void changeInformations( String fullname, String username, String phone,int userId) {
+    public void changeInformations(String fullname, String username, String phone, int userId) {
         try {
             String sql = "UPDATE [user] SET full_name = ?,[user_name] = ?, phone_number = ? WHERE [user_id] = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, fullname);
             statement.setString(2, username);
-            statement.setString(3, phone);  
+            statement.setString(3, phone);
             statement.setInt(4, userId);
             statement.executeUpdate();
         } catch (SQLException ex) {
@@ -197,23 +198,33 @@ public class AccountDAO extends DBContext {
             Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, e);
         }
     }
-
-    public static void main(String[] args) {
-    AccountDAO dao = new AccountDAO();
-    Account account = dao.getAccountsByEmail("sodoku18@gmail.com");
-    if (account != null) {
-        System.out.println("User ID: " + account.getUser_id());
-        System.out.println("Full Name: " + account.getFullname());
-        System.out.println("User Name: " + account.getUsername());
-        System.out.println("Email: " + account.getEmail());
-        System.out.println("Phone Number: " + account.getPhone_number());
-        System.out.println("Password: " + account.getPassword());
-        System.out.println("Avatar URL: " + account.getAvatar_url());
-        System.out.println("Setting ID: " + account.getSetting().getSetting_id());
-        System.out.println("Status: " + account.getStatus());
-        System.out.println("Note: " + account.getNote());
-    } else {
-        System.out.println("Account not found");
+    
+    public List<Account> getListByPage(List<Account> list,
+            int start, int end) {
+        ArrayList<Account> arr = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            arr.add(list.get(i));
+        }
+        return arr;
     }
-}
-}
+
+        public static void main(String[] args) {
+            AccountDAO accountDAO = new AccountDAO();
+
+            ArrayList<Account> accounts = accountDAO.listAcc();
+
+            for (Account acc : accounts) {
+                System.out.println("User ID: " + acc.getUser_id());
+                System.out.println("Full Name: " + acc.getFullname());
+                System.out.println("Username: " + acc.getUsername());
+                System.out.println("Email: " + acc.getEmail());
+                System.out.println("Phone Number: " + acc.getPhone_number());
+                System.out.println("Password: " + acc.getPassword());
+                System.out.println("Avatar URL: " + acc.getAvatar_url());
+                int setting = acc.getSetting().getSetting_id();
+                System.out.println("Status: " + acc.getStatus());
+                System.out.println("Note: " + acc.getNote());
+                System.out.println();
+            }
+        }
+    }

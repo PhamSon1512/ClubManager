@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Account;
@@ -216,31 +217,63 @@ public class UserController extends HttpServlet {
                 Account account = (Account) request.getSession().getAttribute("account");
                 int userId = account.getUser_id();
                 Part filePart = request.getPart("image");
+
                 if (filePart != null && filePart.getSize() > 0) {
                     String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                    String uploadDirPath = getServletContext().getRealPath("/assets/uploads");
-                    File uploadDir = new File(uploadDirPath);
-                    if (!uploadDir.exists()) {
-                        uploadDir.mkdirs();
-                    }
-                    String filePath = uploadDirPath + File.separator + fileName;
-                    Path path = Paths.get(filePath);
-                    Files.deleteIfExists(path); // Delete old file if it exists
-                    filePart.write(filePath); // Save new file
-                    String avatarUrl = "assets/uploads/" + fileName;
-                    try {
-                        dal.updateAvatar(userId, avatarUrl);
-                        account.setAvatar_url(avatarUrl);
-                        request.getSession().setAttribute("account", account);
-                        response.sendRedirect("profile.jsp?success=true");
-                    } catch (SQLException ex) {
-                        Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
-                        response.sendRedirect("profile.jsp?success=false&error=sql");
+                    String contentType = filePart.getContentType();
+
+                    // Check if the uploaded file is an image
+                    if (contentType.startsWith("image/")) {
+                        String uploadDirPath = getServletContext().getRealPath("/assets/uploads");
+                        File uploadDir = new File(uploadDirPath);
+
+                        if (!uploadDir.exists()) {
+                            uploadDir.mkdirs();
+                        }
+
+                        // Generate unique file name to avoid conflicts
+                        String uniqueFileName = generateUniqueFileName(uploadDirPath, fileName);
+
+                        String filePath = uploadDirPath + File.separator + uniqueFileName;
+                        Path path = Paths.get(filePath);
+
+                        try {
+                            // Delete old file if exists
+                            if (account.getAvatar_url() != null && !account.getAvatar_url().isEmpty()) {
+                                String oldFileName = account.getAvatar_url().substring(account.getAvatar_url().lastIndexOf('/') + 1);
+                                Path oldFilePath = Paths.get(uploadDirPath + File.separator + oldFileName);
+                                Files.deleteIfExists(oldFilePath);
+                            }
+
+                            // Save new file
+                            Files.deleteIfExists(path); // Delete new file if it already exists (for safety)
+                            Files.copy(filePart.getInputStream(), path);
+
+                            // Update avatar URL in database
+                            String avatarUrl = "assets/uploads/" + uniqueFileName;
+                            dal.updateAvatar(userId, avatarUrl);
+
+                            // Update session attribute
+                            account.setAvatar_url(avatarUrl);
+                            request.getSession().setAttribute("account", account);
+
+                            // Redirect with success message
+                            response.sendRedirect("profile.jsp?success=true");
+                        } catch (IOException | SQLException ex) {
+                            // Handle exceptions
+                            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                            response.sendRedirect("profile.jsp?success=false&error=sql");
+                        }
+                    } else {
+                        // Handle case where the uploaded file is not an image
+                        response.sendRedirect("profile.jsp?success=false&error=Invalid file type");
                     }
                 } else {
+                    // Handle case where no image is uploaded
                     response.sendRedirect("profile.jsp?success=false&error=No image");
                 }
             }
+
             // update profile
             if (action.equals("update_profile")) {
                 String fullname = request.getParameter("fullname");
@@ -362,6 +395,21 @@ public class UserController extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
+    }
+
+    private String generateUniqueFileName(String uploadDirPath, String fileName) {
+        String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
+        String extension = fileName.substring(fileName.lastIndexOf('.'));
+        String uniqueFileName = baseName + "_" + UUID.randomUUID().toString() + extension;
+        File file = new File(uploadDirPath + File.separator + uniqueFileName);
+
+        // Check if the file already exists with the same name
+        while (file.exists()) {
+            uniqueFileName = baseName + "_" + UUID.randomUUID().toString() + extension;
+            file = new File(uploadDirPath + File.separator + uniqueFileName);
+        }
+
+        return uniqueFileName;
     }
 
 }

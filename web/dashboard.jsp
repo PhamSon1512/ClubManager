@@ -27,11 +27,11 @@
                                 <div class="card features feature-primary rounded border-0 shadow p-4">
                                     <div class="d-flex align-items-center">
                                         <div class="icon text-center rounded-md">
-                                            <i class="uil uil-bed h3 mb-0"></i>
+                                            <i class="uil uil-user h3 mb-0"></i>
                                         </div>
                                         <div class="flex-1 ms-2"> 
                                             <h5 class="mb-0">${patient}</h5>
-                                            <p class="text-muted mb-0">Bệnh nhân</p>
+                                            <p class="text-muted mb-0">Account</p>
                                         </div>
                                     </div>
                                 </div>
@@ -41,11 +41,11 @@
                                 <div class="card features feature-primary rounded border-0 shadow p-4">
                                     <div class="d-flex align-items-center">
                                         <div class="icon text-center rounded-md">
-                                            <i class="uil uil-social-distancing h3 mb-0"></i>
-                                        </div>
+                                            <i class="uil uil-users-alt h3 mb-0"></i>
+                                        </div>  
                                         <div class="flex-1 ms-2">
                                             <h5 class="mb-0">${doctor}</h5>
-                                            <p class="text-muted mb-0">Bác sĩ</p>
+                                            <p class="text-muted mb-0">Clubs</p>
                                         </div>
                                     </div>
                                 </div>
@@ -55,11 +55,11 @@
                                 <div class="card features feature-primary rounded border-0 shadow p-4">
                                     <div class="d-flex align-items-center">
                                         <div class="icon text-center rounded-md">
-                                            <i class="uil uil-file-medical-alt h3 mb-0"></i>
+                                            <i class="uil uil-apps h3 mb-0"></i>
                                         </div>
                                         <div class="flex-1 ms-2">
-                                            <h5 class="mb-0"><fmt:formatNumber pattern="#,###,###,###" value="${Revenue}"/> đ</h5>
-                                            <p class="text-muted mb-0">Doanh thu</p>
+                                            <h5 class="mb-0"></h5>
+                                            <p class="text-muted mb-0">Blogs</p>
                                         </div>
                                     </div>
                                 </div>
@@ -69,11 +69,11 @@
                                 <div class="card features feature-primary rounded border-0 shadow p-4">
                                     <div class="d-flex align-items-center">
                                         <div class="icon text-center rounded-md">
-                                            <i class="uil uil-medkit h3 mb-0"></i>
+                                            <i class="uil uil-calendar-alt h3 mb-0"></i>
                                         </div>
                                         <div class="flex-1 ms-2">
                                             <h5 class="mb-0">${reservation}</h5>
-                                            <p class="text-muted mb-0">Reservations</p>
+                                            <p class="text-muted mb-0">Events</p>
                                         </div>
                                     </div>
 
@@ -84,11 +84,11 @@
                                 <div class="card features feature-primary rounded border-0 shadow p-4">
                                     <div class="d-flex align-items-center">
                                         <div class="icon text-center rounded-md">
-                                            <i class="uil uil-medkit h3 mb-0"></i>
+                                            <i class="uil uil-envelope h3 mb-0"></i>
                                         </div>
                                         <div class="flex-1 ms-2">
                                             <h5 class="mb-0">${appointment}</h5>
-                                            <p class="text-muted mb-0">Appointments</p>
+                                            <p class="text-muted mb-0">Register Club</p>
                                         </div>
                                     </div>
                                 </div>
