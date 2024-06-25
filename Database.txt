@@ -1,0 +1,239 @@
+
+-- Bảng 'setting'
+CREATE TABLE setting (
+    setting_id INT PRIMARY KEY,
+    name NVARCHAR(255),
+    type NVARCHAR(50),
+    description NVARCHAR(MAX),
+    status TINYINT
+);
+GO
+
+INSERT INTO setting (setting_id , [name], type, description, status)
+VALUES (1 ,'User Active', 'user', 'User setting', 1);
+
+INSERT INTO setting (setting_id, [name], type, description, status)
+VALUES (0, 'User Deactive', 'user', 'User setting', 0);
+
+INSERT INTO setting (setting_id, name, [type], description, status)
+VALUES (2, 'User Banned', 'user', 'User setting', 2);
+
+
+
+-- Bảng 'user'
+CREATE TABLE [user] (
+    user_id INT IDENTITY(1,1) PRIMARY KEY,
+    full_name NVARCHAR(35) NOT NULL,
+    user_name NVARCHAR(35) UNIQUE,
+    email NVARCHAR(50) NOT NULL UNIQUE,
+    phone_number NVARCHAR(20) NOT NULL, 
+    password NVARCHAR(255) NOT NULL,
+    avatar_url NVARCHAR(255),
+    setting_id INT,
+    status TINYINT,
+    note NVARCHAR(MAX),
+    FOREIGN KEY (setting_id) REFERENCES setting(setting_id)
+);
+GO
+
+INSERT INTO [user] (full_name, user_name, email, phone_number, password, setting_id, status, note)
+VALUES ('PhamSon', 'phamson', 'sodoku18@gmail.com', '0985173658', '15122003aZ', 0, 0,'User');
+
+INSERT INTO [user] (full_name, user_name, email, phone_number, password, setting_id, status, note)
+VALUES ('PhamDon', 'phamdon', 'a@gmail.com', '0985173658', '15122003aD', 1, 0, 'User');
+
+INSERT INTO [user] (full_name, user_name, email, phone_number, password, setting_id, status, note)
+VALUES ('PhamSon', 'PhamSon2', 'abc@gmail.com', '0985173658', '15122003aZ', 2, 0, 'User');
+
+-- Bảng 'club_category'
+CREATE TABLE club_category (
+    category_id INT IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(50) NOT NULL
+)
+
+Insert into club_category values (N'Art'), (N'Sport'), (N'Educational')
+
+-- Bảng 'club'
+CREATE TABLE club (
+    club_id INT IDENTITY(1,1) PRIMARY KEY,
+    code NVARCHAR(255) NOT NULL UNIQUE,
+    name NVARCHAR(255) NOT NULL,
+    category_id INT,
+    description NVARCHAR(MAX),
+    status TINYINT,
+    imageUrl nvarchar(MAX),
+    FOREIGN KEY (category_id) REFERENCES club_category(category_id)
+);
+GO
+
+INSERT INTO [dbo].[club]
+           ([code]
+           ,[name]
+           ,[description]
+           ,[status]
+           ,[imageUrl]
+           ,[category_id]
+           )
+     VALUES
+           (N'FEC không phải một Câu lạc bộ học thuật đơn thuần mà là nơi những con người tử tế cùng nhau cố gắng.',
+		   N'FEC - FPTU English Club ',
+		   N'FEC - FPTU English Club là một câu lạc bộ tiếng Anh tại Đại học FPT (FPT University) tại Việt Nam, nơi sinh viên có cơ hội cải thiện và thực hành kỹ năng tiếng Anh của mình thông qua các hoạt động giao tiếp, học tập và vui chơi. Các bài viết có liên quan đến tiếng Anh với nội dung song ngữ để các bạn vừa giải trí vừa học thêm thứ ngôn ngữ rất đỗi thông dụng và đặc sắc này!',
+		   1, N'https://scontent.fhan5-11.fna.fbcdn.net/v/t1.6435-9/36729923_495233770909133_4021475237563465728_n.png?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=Cz-R6gXWofcQ7kNvgHZr_az&_nc_ht=scontent.fhan5-11.fna&oh=00_AYCh4nvALYGVVDU8Vim8_DdBedGQcfd5WvdsivlWQcPAQA&oe=669621B3', 3)
+INSERT INTO [dbo].[club]
+           ([code]
+           ,[name]
+           ,[description]
+           ,[status]
+           ,[imageUrl]
+           ,[category_id]
+           )
+     VALUES
+           (N'JS Club là câu lạc bộ Kỹ sư phần mềm Nhật Bản, nơi hội tụ của những người bạn đam mê lập trình',
+		   N'JS Club - Japanese Software Engineers ',
+		   N'JS Club (Câu lạc bộ Kỹ sư phần mềm Nhật Bản) là tổ chức chuyên nuôi dưỡng cộng đồng những người đam mê công nghệ phần mềm tại Đại học FPT. Nó cung cấp một nền tảng cho sinh viên quan tâm đến thực tiễn, công nghệ và văn hóa phát triển phần mềm của Nhật Bản.',
+		   1, N'https://scontent.fhan5-8.fna.fbcdn.net/v/t1.18169-9/1512823_498783996902788_939132895_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=T5k8iHpcbUUQ7kNvgFnC9ZS&_nc_ht=scontent.fhan5-8.fna&oh=00_AYDAuPdklaBw6v2R7HIHr9n81AuOEGCXSbSbAvnTlzB8Og&oe=66962838', 3)
+INSERT INTO [dbo].[club]
+           ([code]
+           ,[name]
+           ,[description]
+           ,[status]
+           ,[imageUrl]
+           ,[category_id]
+           )
+     VALUES
+           (N'AI Club là CLB Trí tuệ Nhân tạo đầu tiên của FPTU',
+		   N'FPTU AI Club - Artificial Intelligence Researchers ',
+		   N'Câu lạc bộ AI FPTU, tên chính thức là Câu lạc bộ các nhà nghiên cứu trí tuệ nhân tạo tại Đại học FPT, là tổ chức dành riêng cho sinh viên đam mê khám phá và phát triển lĩnh vực Trí tuệ nhân tạo (AI). Câu lạc bộ này đóng vai trò là nền tảng để các thành viên tham gia học tập, nghiên cứu và ứng dụng thực tế các công nghệ AI',
+		   1, N'https://scontent.fhan5-6.fna.fbcdn.net/v/t1.6435-9/55776208_1199614970195050_7156206729716301824_n.png?stp=dst-png_s552x414&_nc_cat=107&ccb=1-7&_nc_sid=5f2048&_nc_ohc=jQesyDBCZkMQ7kNvgH3Ng91&_nc_ht=scontent.fhan5-6.fna&oh=00_AYBRsqnqVK6urFT3TZeCBZ3pbvTStAHVBvt6UL1eESpJTw&oe=669628A5', 3)
+INSERT INTO [dbo].[club]
+           ([code]
+           ,[name]
+           ,[description]
+           ,[status]
+           ,[imageUrl]
+           ,[category_id]
+           )
+     VALUES
+           (N'CLB Tiếng Trung - Đại Học FPT ',
+		   N'FCC - FPT Chinese Club',
+		   N'Câu lạc bộ tiếng Trung FPT nhằm mục đích làm phong phú thêm trải nghiệm của sinh viên bằng cách cung cấp các cơ hội giáo dục hấp dẫn để học tiếng Trung và khám phá nền văn hóa sôi động của ngôn ngữ này trong cộng đồng đại học.',
+		   1, N'https://scontent.fhan5-10.fna.fbcdn.net/v/t31.18172-8/10848681_1595767157376433_2047429643531984747_o.jpg?_nc_cat=111&ccb=1-7&_nc_sid=5f2048&_nc_ohc=RS33PmLGOM4Q7kNvgHZIfeA&_nc_ht=scontent.fhan5-10.fna&oh=00_AYDgeQdfnxyslDzy_MIvCb1MhodlzBoyLKYIVEWaaIGXnA&oe=6696388A', 3)
+
+INSERT INTO [dbo].[club]
+           ([code]
+           ,[name]
+           ,[description]
+           ,[status]
+           ,[imageUrl]
+           ,[category_id]
+           )
+     VALUES
+           (N'No Shy Club - English Speaking & Soft Skill Club of FPT University ',
+		   N'No Shy Club ',
+		   N'No Shy Club được thành lập nhằm tạo ra một môi trường cởi mở, trong đó các thành viên có nhiều cơ hội trau dồi bản thân về ngôn ngữ & các kỹ năng mềm khác. Nơi các thành viên có thể nâng cao khả năng ngôn ngữ và các kỹ năng mềm khác mà không phải đắn đo hay ngại ngùng.',
+		   1, N'https://scontent.fhan5-10.fna.fbcdn.net/v/t39.30808-6/439954012_941879891066371_8344218077429817694_n.png?stp=dst-jpg&_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_ohc=fKuSqBO50TAQ7kNvgFmGQCV&_nc_ht=scontent.fhan5-10.fna&oh=00_AYCCgSsn5v7YA6v9VQovTzHzC4Iowkcpx8IH6ccvn7r-eA&oe=6674901C', 3)
+INSERT INTO [dbo].[club]
+           ([code]
+           ,[name]
+           ,[description]
+           ,[status]
+           ,[imageUrl]
+           ,[category_id]
+           )
+     VALUES
+           (N'CLB Kinh Doanh trực thuộc Đại học FPT',
+		   N'FPTU Business Club - FBC  ',
+		   N'FPTU Business Club là nơi để tất cả thành viên không chỉ được hết mình đóng góp ý tưởng với những dự án kinh doanh sáng tạo, độc đáo; được trau dồi thêm kiến thức về chuyên môn mà còn là nơi để mọi người có thể giúp đỡ lẫn nhau cả trong lĩnh vực học tập, cuộc sống. Nơi mà tất cả mọi người hoạt động như một gia đình, qua những buổi giao lưu sinh hoạt để các thành viên thấu hiểu về nhau hơn.',
+		   1, N'https://scontent.fhan5-8.fna.fbcdn.net/v/t39.30808-6/335392075_237659178700337_4687146864420413562_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=KQllb1AmU0wQ7kNvgFtcGVO&_nc_ht=scontent.fhan5-8.fna&oh=00_AYBIgWMnFBtS4Y35GPZOlIEmTBoGXmJErmwlONuK21ttqA&oe=6674A446', 3)
+
+GO
+
+-- Bảng 'club_member'
+CREATE TABLE club_member (
+    club_id INT,
+    user_id INT,
+    speciality_id INT,
+    request_note NVARCHAR(MAX),
+    status TINYINT,
+    PRIMARY KEY (club_id, user_id, speciality_id),
+    FOREIGN KEY (club_id) REFERENCES club(club_id),
+    FOREIGN KEY (user_id) REFERENCES [user](user_id)
+);
+GO
+
+-- Bảng 'event'
+CREATE TABLE [event] (
+    event_id INT IDENTITY(1,1) PRIMARY KEY,
+    club_id INT,
+    user_id INT,
+    FOREIGN KEY (club_id) REFERENCES club(club_id),
+    FOREIGN KEY (user_id) REFERENCES [user](user_id)
+);
+GO
+
+-- Bảng 'task'
+CREATE TABLE task (
+    task_id INT IDENTITY(1,1) PRIMARY KEY,
+    event_id INT NOT NULL,
+    club_id INT NOT NULL,
+    assigner_id INT NOT NULL,
+    assignee_id INT NOT NULL,	
+    FOREIGN KEY (event_id) REFERENCES event(event_id),
+    FOREIGN KEY (club_id) REFERENCES club(club_id),
+    FOREIGN KEY (assigner_id) REFERENCES [user](user_id),
+    FOREIGN KEY (assignee_id) REFERENCES [user](user_id)
+);
+GO
+
+-- Bảng 'post'
+CREATE TABLE post (
+    post_id INT IDENTITY(1,1) PRIMARY KEY,
+    title NVARCHAR(255) NOT NULL,
+    thumnail_url NVARCHAR(255),
+    content NVARCHAR(MAX),
+    status TINYINT
+);
+GO
+
+-- Bảng 'post_category'
+CREATE TABLE post_category (
+    post_id INT,
+    setting_id INT,
+    PRIMARY KEY (post_id, setting_id),
+    FOREIGN KEY (post_id) REFERENCES post(post_id),
+    FOREIGN KEY (setting_id) REFERENCES setting(setting_id)
+);
+GO
+
+-- Bảng 'blog'
+CREATE TABLE blog (
+    blog_id INT IDENTITY(1,1) PRIMARY KEY,
+    title NVARCHAR(255) NOT NULL,
+    thumnail_url NVARCHAR(255),
+    content NVARCHAR(MAX),
+    status TINYINT
+);
+GO
+
+-- Bảng 'blog_category'
+CREATE TABLE blog_category (
+    blog_id INT,
+    setting_id INT,
+    PRIMARY KEY (blog_id, setting_id),
+    FOREIGN KEY (blog_id) REFERENCES blog(blog_id),
+    FOREIGN KEY (setting_id) REFERENCES setting(setting_id)
+);
+GO
+
+-- Bảng 'contact'
+CREATE TABLE contact (
+    contact_id INT IDENTITY(1,1) PRIMARY KEY,
+    full_name NVARCHAR(255) NOT NULL,
+    email NVARCHAR(255) NOT NULL,
+    phone_number NVARCHAR(20) NOT NULL,
+    title NVARCHAR(255),
+    message NVARCHAR(MAX) NOT NULL,
+    type_id INT,
+    FOREIGN KEY (type_id) REFERENCES setting(setting_id)
+);
+GO
