@@ -3,30 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/SWP391/ClubMangement/web/admin/account.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/web/index.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/web/admin/layout/adminhead.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/dal/AccountDAO.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/config/Encode.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/controller/admin/AccountManager.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/model/Club.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/dal/BlogDAO.java</file>
-            <file>file:/D:/SWP391/ClubMangement/web/profile.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/web/registerclub.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/web/regisclub.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/controller/home/RegisterClubController.java</file>
-            <file>file:/D:/SWP391/ClubMangement/web/dashboard.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/controller/home/UserController.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/model/Account.java</file>
-            <file>file:/D:/SWP391/ClubMangement/web/admin/layout/menu.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/dal/ClubDBContext.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/model/Setting.java</file>
-            <file>file:/D:/SWP391/ClubMangement/web/admin/layout/headmenu.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/web/admin/layout/footer.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/model/Notification.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/controller/admin/DashboardController.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/dal/ClubDAO.java</file>
-            <file>file:/D:/SWP391/ClubMangement/web/WEB-INF/web.xml</file>
+            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/controller/home/SearchController.java</file>
+            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/web/detail.jsp</file>
+            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/web/index.jsp</file>
+            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/resource/database.properties</file>
+            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/controller/home/CategoryClubController.java</file>
+            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/dal/ClubDBContext.java</file>
+            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/dal/BlogDAO.java</file>
+            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/dal/AccountDAO.java</file>
         </group>
     </open-files>
 </project-private>

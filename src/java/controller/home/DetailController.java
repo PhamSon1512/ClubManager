@@ -48,8 +48,9 @@ public class DetailController extends HttpServlet {
           List<BlogOfClub> listBlogs = new BlogDAO().getBlogByClubId(clubId);
 
         // Set attribute in request
-        request.setAttribute("listBlogs", listBlogs);   
-       request.getRequestDispatcher("detail.jsp").forward(request, response);
+        request.setAttribute("listBlogs", listBlogs);
+        
+        request.getRequestDispatcher("detail.jsp").forward(request, response);
     }
 }
 
