@@ -20,7 +20,7 @@
                 <li><a href="servicemanage?action=all"><i class="uil uil-social-distancing me-2 d-inline-block"></i>Clubs Member</a></li> <!-- admin: statistic, manager: can add and accept new user join club -->
                 <li><a href="appointmentmanage?action=all"><i class="uil uil-envelope me-2 d-inline-block"></i>Register Club</a></li> <!-- manager: can add and accept new user join club -->
                 <li><a href="reservationmanage?action=all"><i class="uil uil-calendar-alt me-2 d-inline-block"></i>Event</a></li> <!-- admin: statistic; manager: can add and accept new event -->
-                <li><a href="reservationmanage?action=all"><i class="uil uil-phones me-2 d-inline-block"></i>Admin Contact</a></li>
+                <li><a href="reservationmanage?action=all"><i class="uil uil-phone me-2 d-inline-block"></i>Admin Contact</a></li>
                 <!--<li><a href="blogmanage?action=all"><i class="uil uil-flip-h me-2 d-inline-block"></i>Quản lý blog</a></li>-->
                 </c:if>
 

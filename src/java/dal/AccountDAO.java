@@ -84,6 +84,29 @@ public class AccountDAO extends DBContext {
         return account;
     }
 
+    public List<Account> getListByPage(List<Account> list,
+            int start, int end) {
+        ArrayList<Account> arr = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            arr.add(list.get(i));
+        }
+        return arr;
+    }
+
+    public int getTotalAccount() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM [user]";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return count;
+    }
+
     public ArrayList<Account> listAcc() {
         ArrayList acc = new ArrayList();
 
@@ -198,33 +221,24 @@ public class AccountDAO extends DBContext {
             Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, e);
         }
     }
-    
-    public List<Account> getListByPage(List<Account> list,
-            int start, int end) {
-        ArrayList<Account> arr = new ArrayList<>();
-        for (int i = start; i < end; i++) {
-            arr.add(list.get(i));
-        }
-        return arr;
-    }
 
-        public static void main(String[] args) {
-            AccountDAO accountDAO = new AccountDAO();
+    public static void main(String[] args) {
+        AccountDAO accountDAO = new AccountDAO();
 
-            ArrayList<Account> accounts = accountDAO.listAcc();
+        ArrayList<Account> accounts = accountDAO.listAcc();
 
-            for (Account acc : accounts) {
-                System.out.println("User ID: " + acc.getUser_id());
-                System.out.println("Full Name: " + acc.getFullname());
-                System.out.println("Username: " + acc.getUsername());
-                System.out.println("Email: " + acc.getEmail());
-                System.out.println("Phone Number: " + acc.getPhone_number());
-                System.out.println("Password: " + acc.getPassword());
-                System.out.println("Avatar URL: " + acc.getAvatar_url());
-                int setting = acc.getSetting().getSetting_id();
-                System.out.println("Status: " + acc.getStatus());
-                System.out.println("Note: " + acc.getNote());
-                System.out.println();
-            }
+        for (Account acc : accounts) {
+            System.out.println("User ID: " + acc.getUser_id());
+            System.out.println("Full Name: " + acc.getFullname());
+            System.out.println("Username: " + acc.getUsername());
+            System.out.println("Email: " + acc.getEmail());
+            System.out.println("Phone Number: " + acc.getPhone_number());
+            System.out.println("Password: " + acc.getPassword());
+            System.out.println("Avatar URL: " + acc.getAvatar_url());
+            int setting = acc.getSetting().getSetting_id();
+            System.out.println("Status: " + acc.getStatus());
+            System.out.println("Note: " + acc.getNote());
+            System.out.println();
         }
     }
+}

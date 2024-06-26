@@ -30,7 +30,7 @@
                                             <i class="uil uil-user h3 mb-0"></i>
                                         </div>
                                         <div class="flex-1 ms-2"> 
-                                            <h5 class="mb-0">${patient}</h5>
+                                            <h5 class="mb-0">${accountCount}</h5>
                                             <p class="text-muted mb-0">Account</p>
                                         </div>
                                     </div>
@@ -44,7 +44,7 @@
                                             <i class="uil uil-users-alt h3 mb-0"></i>
                                         </div>  
                                         <div class="flex-1 ms-2">
-                                            <h5 class="mb-0">${doctor}</h5>
+                                            <h5 class="mb-0">${clubCount}</h5>
                                             <p class="text-muted mb-0">Clubs</p>
                                         </div>
                                     </div>
@@ -58,7 +58,7 @@
                                             <i class="uil uil-apps h3 mb-0"></i>
                                         </div>
                                         <div class="flex-1 ms-2">
-                                            <h5 class="mb-0"></h5>
+                                            <h5 class="mb-0">${blogCount}</h5>
                                             <p class="text-muted mb-0">Blogs</p>
                                         </div>
                                     </div>
@@ -72,7 +72,7 @@
                                             <i class="uil uil-calendar-alt h3 mb-0"></i>
                                         </div>
                                         <div class="flex-1 ms-2">
-                                            <h5 class="mb-0">${reservation}</h5>
+                                            <h5 class="mb-0"></h5>
                                             <p class="text-muted mb-0">Events</p>
                                         </div>
                                     </div>

@@ -8,6 +8,8 @@ package dal;
  *
  * @author FANCY
  */
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import model.Blog;
 import java.sql.*;
 import java.util.ArrayList;
@@ -75,29 +77,42 @@ public class BlogDAO {
         return blog;
     }
 
-  public List<BlogOfClub> getBlogByClubId(int club_id) {
-    List<BlogOfClub> list = new ArrayList<>();
-    String sql = "select blog_id, club_id, title, imageBlog, content from blogofclub WHERE club_id = ?";
-    try {
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, club_id);
-        ResultSet rs = ps.executeQuery();
+    public List<BlogOfClub> getBlogByClubId(int club_id) {
+        List<BlogOfClub> list = new ArrayList<>();
+        String sql = "select blog_id, club_id, title, imageBlog, content from blogofclub WHERE club_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, club_id);
+            ResultSet rs = ps.executeQuery();
 
-       while (rs.next()) {
-            BlogOfClub blog = new BlogOfClub();
-            blog.setBlog_id(rs.getInt("blog_id"));
-            blog.setClub_id(rs.getInt("club_id"));
-           blog.setTitle(rs.getString("title"));
-           blog.setImageBlog(rs.getString("imageBlog"));
-            blog.setContent(rs.getString("content"));
-            list.add(blog); // Add each blog to the list
+            while (rs.next()) {
+                BlogOfClub blog = new BlogOfClub();
+                blog.setBlog_id(rs.getInt("blog_id"));
+                blog.setClub_id(rs.getInt("club_id"));
+                blog.setTitle(rs.getString("title"));
+                blog.setImageBlog(rs.getString("imageBlog"));
+                blog.setContent(rs.getString("content"));
+                list.add(blog); // Add each blog to the list
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print the exception (you can log it instead)
         }
-    } catch (SQLException e) {
-        e.printStackTrace(); // Print the exception (you can log it instead)
+        return list;
     }
-    return list;
-}
 
+    public int getTotalBlog() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM [blog]";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
 
-   
 }

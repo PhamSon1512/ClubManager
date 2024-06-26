@@ -32,7 +32,7 @@
                         <a href="dashboard?action=user" class="navbar-link"><i class="ri-airplay-line align-middle navbar-icon"></i>User Dashboard</a>
                     </c:when>
                     <c:when test="${sessionScope.account.status == 1}">
-                        <a href="dashboard?action=admin" class="navbar-link"><i class="ri-airplay-line align-middle navbar-icon"></i>Admin Dashboard</a>
+                        <a href="dashboard?action=home" class="navbar-link"><i class="ri-airplay-line align-middle navbar-icon"></i>Admin Dashboard</a>
                     </c:when>
                     <c:when test="${sessionScope.account.status== 2}">
                         <a href="dashboard?action=manager" class="navbar-link"><i class="ri-airplay-line align-middle navbar-icon"></i>Manager Dashboard</a>
