@@ -2,28 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/D:/SWP391/ClubMangement/web/admin/account.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/web/index.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/dal/AccountDAO.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/controller/admin/AccountManager.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/model/Club.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/dal/BlogDAO.java</file>
-            <file>file:/D:/SWP391/ClubMangement/web/profile.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/web/registerclub.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/web/regisclub.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/controller/home/RegisterClubController.java</file>
-            <file>file:/D:/SWP391/ClubMangement/web/dashboard.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/controller/home/UserController.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/model/Account.java</file>
-            <file>file:/D:/SWP391/ClubMangement/web/admin/layout/menu.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/dal/ClubDBContext.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/model/Setting.java</file>
-            <file>file:/D:/SWP391/ClubMangement/web/admin/layout/headmenu.jsp</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/model/Notification.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/controller/admin/DashboardController.java</file>
-            <file>file:/D:/SWP391/ClubMangement/src/java/dal/ClubDAO.java</file>
-            <file>file:/D:/SWP391/ClubMangement/web/WEB-INF/web.xml</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
