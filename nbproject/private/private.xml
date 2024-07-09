@@ -3,7 +3,6 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
             <file>file:/D:/SWP391/ClubMangement/web/changePassword.jsp</file>
             <file>file:/D:/SWP391/ClubMangement/web/verifyOtp.jsp</file>
             <file>file:/D:/SWP391/ClubMangement/web/memberDetail.jsp</file>
@@ -73,16 +72,6 @@
             <file>file:/D:/SWP391/ClubMangement/src/java/controller/admin/DashboardController.java</file>
             <file>file:/D:/SWP391/ClubMangement/src/java/model/Department.java</file>
             <file>file:/D:/SWP391/ClubMangement/src/java/dal/ClubDAO.java</file>
-=======
-            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/controller/home/SearchController.java</file>
-            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/web/detail.jsp</file>
-            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/web/index.jsp</file>
-            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/resource/database.properties</file>
-            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/controller/home/CategoryClubController.java</file>
-            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/dal/ClubDBContext.java</file>
-            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/dal/BlogDAO.java</file>
-            <file>file:/D:/C%23/SWP391/SWP291_Gr3/SWP291_Gr3/src/java/dal/AccountDAO.java</file>
->>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
         </group>
     </open-files>
 </project-private>

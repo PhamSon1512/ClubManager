@@ -14,7 +14,6 @@
 
     <jsp:include page="layout/head.jsp"/>
     <body>
-        <jsp:include page="layout/preloader.jsp"/>
         <jsp:include page="layout/menu.jsp"/>
 
 
@@ -32,7 +31,7 @@
                 </div>
             </div>
         </section>
- 
+
         <section class="section">
             <div class="container">
                 <h2 class="mb-0">Register Club</h2>
@@ -40,18 +39,7 @@
                     <div class="col-lg-7">
                         <div class="card border-0 shadow rounded overflow-hidden">
                             <div class="tab-content p-4" id="pills-tabContent">
-<<<<<<< HEAD
                                 <form action="regisclub" method="POST">
-=======
-                                <%
-                                    Account account = null;
-                                    if (session.getAttribute("account") != null) {
-                                        account = (Account) session.getAttribute("account");
-                                    }
-                                %>            
-                                <% if (account != null) { %>
-                                <form action="registerclub" method="POST">
->>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
                                     <div class="row">
                                         <div class="p-6">
                                             <h4 class="mb-0">Profile</h4>
@@ -60,38 +48,29 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Name<span class="text-danger">*</span></label>
-                                                <input class="form-control" value="<%= account.getFullname() %>" readonly="">
+                                                <input class="form-control" value="${account.fullname}">
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Telephone<span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" value="<%= account.getPhone_number() %>" readonly="">
+                                                <input type="text" class="form-control" value="${account.phone_number}">
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="mb-3">
                                                 <label class="form-label">Email<span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" value="<%= account.getEmail() %>">
+                                                <input type="text" class="form-control" value="${account.email}">
                                             </div>
                                         </div>
                                         <br>
-                                        <% } %>
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <label class="form-label">Club List<span class="text-danger">*</span></label>
                                                 <select name="clublist" oninvalid="Select(this);" oninput="Select(this);" id="mySelect" class="form-control department-name select2input">
-
-                                                    <option value="Music Club">Music Club</option>
-                                                    <option value="Sport Club">Sport Club</option>
-                                                    <option value="Business Club">Business Club</option>
-                                                    <option value="English Club">English Club</option>
-                                                    <option value="Street Workout Club">Street Workout Club</option>
-                                                    <option value="Hebe Club">Hebe Club</option>
-                                                    <option value="Baskeball Club">Baskeball Club</option>
-                                                    <option value="Chess Club">Chess Club</option>
-                                                    <option value="Gymnastic Club">Gymnastic Club</option>
-                                                    <option value="Debate Club">Debate Club</option>
+                                                    <c:forEach var="club" items="${clubList}">
+                                                        <option value="${club.name}">${club.name}</option>
+                                                    </c:forEach>
                                                 </select>
                                             </div>
                                         </div>
@@ -112,7 +91,7 @@
                                             <div class="mb-3">
                                                 <label class="form-label">Committees<span class="text-danger">*</span></label>
                                                 <select required="" name="commit" class="form-control department-name select2input custom-select" id="commit-select">
-                                                    <option value="chuyen mon">Ban Chuyen Mon</option>
+                                                    <option value="chuyenmon">Ban Chuyen Mon</option>
                                                     <option value="vanhoa">Ban Van Hoa</option>
                                                     <option value="truyenthong">Ban Truyen Thong</option>
                                                     <option value="haucan">Ban Hau Can</option>
@@ -122,14 +101,15 @@
                                             </div>
                                         </div>
 
-
-
                                         <script>
                                             function toggleCustomPurposeInput() {
                                                 var selectElement = document.getElementById('purpose-select');
                                                 var customPurposeInput = document.getElementById('custom-purpose');
                                                 if (selectElement.value === 'Other') {
                                                     customPurposeInput.style.display = 'block';
+                                                } else if (customPurposeInput.value.trim() === '') {
+                                                    alert('Please enter your purpose.');
+                                                    customPurposeInput.focus();
                                                 } else {
                                                     customPurposeInput.style.display = 'none';
                                                 }
@@ -170,62 +150,6 @@
         <script src="assets/js/vn.js"></script>
         <script src="assets/js/app.js"></script>
         <script src="assets/js/sweetalert.min.js"></script>
-        <script>
-            $("#checkin-date").flatpickr({
-                defaultDate: "today",
-                minDate: "today",
-                maxDate: new Date().fp_incr(14),
-                dateFormat: "d/m/Y",
-                locale: "vn"
-            });
-            function Select(text) {
-                if (text.value == "") {
-                    $(".default").hide();
-                    $(".vnpay").hide();
-                } else if (text.value == "default") {
-                    $(".default").show();
-                    $(".vnpay").hide();
-                } else if (text.value == "vnpay") {
-                    $(".vnpay").show();
-                    $(".default").hide();
-                } else {
-                    $(".default").hide();
-                    $(".vnpay").hide();
-                }
-            }
-            $(document).ready(jQuery(function () {
-                jQuery(".default").click(function (e) {
-                    e.preventDefault();
-                    var form = $(this).parents('form');
-                    swal({
-                        title: "Xác nhận",
-                        text: "Bạn có chắc chắn muốn khởi tạo lịch hẹn này ?",
-                        buttons: ["Hủy bỏ", "Đồng ý"],
-                    })
-                            .then((cofirm) => {
-                                if (cofirm) {
-                                    form.submit();
-                                }
-                            })
-                });
-            }));
-            $(document).ready(jQuery(function () {
-                jQuery(".vnpay").click(function (e) {
-                    e.preventDefault();
-                    var form = $(this).parents('form');
-                    swal({
-                        title: "Xác nhận",
-                        text: "Bạn có chắc chắn muốn thanh toán ?",
-                        buttons: ["Hủy bỏ", "Đồng ý"],
-                    })
-                            .then((cofirm) => {
-                                if (cofirm) {
-                                    form.submit();
-                                }
-                            })
-                });
-            }));
-        </script>
 
     </body>
 

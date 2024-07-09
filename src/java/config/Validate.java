@@ -25,7 +25,6 @@ public class Validate {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-<<<<<<< HEAD
     
     public static boolean checkFullName(String fullname) {
         String regex = "^[a-zA-Z\\s]+$";
@@ -33,35 +32,11 @@ public class Validate {
         Matcher matcher = pattern.matcher(fullname);
         return matcher.matches() && !fullname.trim().isEmpty();
     }
-=======
-
-//    public static String capitalizeFirstLetter(String s) {
-//        String[] words = s.toLowerCase().split("\\s+");
-//        StringBuilder capitalized = new StringBuilder();
-//        for (String word : words) {
-//            if (!word.isEmpty()) {
-//                capitalized.append(Character.toUpperCase(word.charAt(0)))
-//                        .append(word.substring(1))
-//                        .append(" ");
-//            }
-//        }
-//        return capitalized.toString().trim();
-//    }
-
-   public static boolean checkFullName(String fullname) {
-    String regex = "^[\\p{L} ]+$";
-    Pattern pattern = Pattern.compile(regex);
-    Matcher matcher = pattern.matcher(fullname);
-    return matcher.matches();
-}
-
->>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
 
     public static boolean checkPassword(String password) {
-        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(password);
-        return matcher.matches();
+        // Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, and a digit
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$";
+        return password != null && password.matches(regex);
     }
 
 }
