@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.ClubMember;
 
 /**
  *
@@ -55,6 +57,20 @@ public class DashboardController extends HttpServlet {
         try {
             // dashboard homepage
             if (action.equals("home")) {
+                String userEmail = (String) request.getSession().getAttribute("userEmail");
+
+                ClubDBContext pdb = new ClubDBContext();
+                List<ClubMember> listClubs = pdb.getAllClubMember();
+
+                Integer userClubId = null;
+                for (ClubMember clubmember : listClubs) {
+                    if (clubmember.getEmail().equalsIgnoreCase(userEmail)) {
+                        userClubId = clubmember.getClub_id();
+                        break;  // Stop looping once we find the user's club
+                    }
+                }
+
+                request.setAttribute("userClubId", userClubId);
                 request.getRequestDispatcher("dashboard.jsp").forward(request, response);
             }
         } catch (Exception e) {

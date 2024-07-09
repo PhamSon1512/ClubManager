@@ -155,7 +155,7 @@
             %>
             <div class="row justify-content-center">
                 <div class="col-md-10">
-                    <a href="blog.jsp" class="btn btn-secondary mb-3">&larr; Back to Blog</a>
+                    <a href="blog" class="btn btn-secondary mb-3">&larr; Back to Blog</a>
                     <h1 class="blog-title"><%= blog.getTitle() %></h1>
                     <p><img src="<%= blog.getThumbnailUrl() %>" class="blog-thumbnail img-fluid" alt="Blog Thumbnail"></p>
                     <div class="blog-content">
@@ -240,8 +240,6 @@
         </a>
 
         <jsp:include page="layout/footer.jsp"/>
-        <jsp:include page="layout/search.jsp"/>
-        <jsp:include page="layout/facebookchat.jsp"/>
 
         <div class="modal fade" id="watchvideomodal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">

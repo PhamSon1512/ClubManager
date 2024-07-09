@@ -14,7 +14,7 @@ public class Iconstant {
     public static final String GOOGLE_CLIENT_SECRET = "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";
 
     
-    public static final String GOOGLE_REDIRECT_URI = "http://localhost:8080/Iter2/registerclub";
+    public static final String GOOGLE_REDIRECT_URI = "http://localhost:8080/Iter2/logingoogle";
     public static final String GOOGLE_GRANT_TYPE = "authorization_code";
 
     public static final String GOOGLE_LINK_GET_TOKEN = "https://accounts.google.com/o/oauth2/token";

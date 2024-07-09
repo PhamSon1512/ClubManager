@@ -8,10 +8,10 @@
     <div class="container-fluid">
         <div class="row align-items-center">
             <div class="col">
-                <div class="text-sm-start text-center">
-                    <p class="mb-0 text-muted">
+                <div class="text-sm-start">
+                    <p class="mb-0 text-muted text-center">
                         <script>document.write(new Date().getFullYear())</script>
-                        © Doctris.
+                        © FPTU Club Management.
                     </p>
                 </div>
             </div>

@@ -31,9 +31,6 @@ public class HomeController extends HttpServlet {
         ClubDAO clubDao = new ClubDAO();
         List<Category> listCategories = clubDao.getAllCategories();
         request.setAttribute("listCategories", listCategories);
-        ClubDBContext clubDB = new ClubDBContext();
-        List<Club> listClubs = clubDB.getAllClubs();
-        request.setAttribute("listClubs", listClubs);
         request.getSession().setAttribute("urlHistory", "home");
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }

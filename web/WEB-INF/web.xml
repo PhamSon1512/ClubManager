@@ -17,10 +17,6 @@
         <servlet-class>controller.home.ContactController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ValidateOTP</servlet-name>
-        <servlet-class>config.ValidateOTP</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>BlogController</servlet-name>
         <servlet-class>controller.home.BlogController</servlet-class>
     </servlet>
@@ -41,10 +37,6 @@
         <servlet-class>controller.home.SearchController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>BlogOfClubDetails</servlet-name>
-        <servlet-class>controller.home.BlogOfClubDetails</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>BlogListOfClub</servlet-name>
         <servlet-class>controller.home.BlogListOfClub</servlet-class>
     </servlet>
@@ -55,6 +47,14 @@
     <servlet>
         <servlet-name>AccountManager</servlet-name>
         <servlet-class>controller.admin.AccountManager</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoginWithGoogle</servlet-name>
+        <servlet-class>controller.home.LoginWithGoogle</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserRegisterClub</servlet-name>
+        <servlet-class>controller.home.UserRegisterClub</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>HomeController</servlet-name>
@@ -71,10 +71,6 @@
     <servlet-mapping>
         <servlet-name>ContactController</servlet-name>
         <url-pattern>/contact</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ValidateOTP</servlet-name>
-        <url-pattern>/ValidateOtp</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>BlogController</servlet-name>
@@ -97,10 +93,6 @@
         <url-pattern>/search</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>BlogOfClubDetails</servlet-name>
-        <url-pattern>/blogclub</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>BlogListOfClub</servlet-name>
         <url-pattern>/BlogListOfClub</url-pattern>
     </servlet-mapping>
@@ -111,5 +103,13 @@
     <servlet-mapping>
         <servlet-name>AccountManager</servlet-name>
         <url-pattern>/account</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginWithGoogle</servlet-name>
+        <url-pattern>/logingoogle</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserRegisterClub</servlet-name>
+        <url-pattern>/userRegisterClub</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -36,10 +36,6 @@ public class BlogListOfClub extends HttpServlet {
         String clubIdParam = request.getParameter("club_id");
         int club_id = Integer.parseInt(clubIdParam);
 
-        // Get list of blogs for the specified club_id
-      
-
-        // Forward to JSP for rendering
         request.getRequestDispatcher("detail.jsp").forward(request, response);
 
     }

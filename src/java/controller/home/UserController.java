@@ -1,8 +1,10 @@
 package controller.home;
 
+import Email.JavaMail;
 import config.Encode;
 import config.Validate;
 import dal.AccountDAO;
+import dal.ClubDBContext;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -17,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +45,7 @@ public class UserController extends HttpServlet {
 
         HttpSession session = request.getSession();
         AccountDAO dal = new AccountDAO();
+        ClubDBContext dao = new ClubDBContext();
 
         String action = request.getParameter("action");
 
@@ -66,6 +70,11 @@ public class UserController extends HttpServlet {
                     }
                     request.getRequestDispatcher("user?action=login").forward(request, response);
                 } else {
+                    if (!user.isVerified()) {
+                        request.setAttribute("loginError", "Your account is not verified. <a style='color: red; font-weight: bold' href='user?action=checkmail'>Click here</a> to verify.");
+                        request.getRequestDispatcher("user?action=login").forward(request, response);
+                        return;
+                    }
                     Setting userSetting = user.getSetting();
                     int settingStatus = userSetting.getSetting_id();
 
@@ -77,6 +86,7 @@ public class UserController extends HttpServlet {
                         case 1: // active
                             int userStatus = user.getStatus();
                             session.setAttribute("account", user);
+                            session.setAttribute("userEmail", email);
 
                             Cookie cemail = new Cookie("email", email);
                             Cookie cpass = new Cookie("pass", password);
@@ -105,7 +115,9 @@ public class UserController extends HttpServlet {
                                     response.sendRedirect("dashboard?action=home");
                                     break;
                                 case 2: // manager
-                                    response.sendRedirect("managerHomePage.jsp");
+                                    int loggedInClubId = dao.getClubIdByEmail(email);
+                                    session.setAttribute("loggedInClubId", loggedInClubId);
+                                    response.sendRedirect("dashboard?action=home");
                                     break;
                                 default:
                                     request.setAttribute("loginError", "Unknown user status. Please contact support.");
@@ -139,14 +151,13 @@ public class UserController extends HttpServlet {
                 String email = request.getParameter("email");
                 String password = request.getParameter("password");
                 String repassword = request.getParameter("confirmPassword");
-                String rphone = request.getParameter("phoneNumber");
                 String user_name = request.getParameter("fullname");
                 int setting = 1; // Active user by default
                 int status = 0; // Regular user by default
+                boolean verified = false;
 
                 request.setAttribute("fullname", name);
                 request.setAttribute("email", email);
-                request.setAttribute("phoneNumber", rphone);
 
                 // Validate input fields
                 boolean hasErrors = false;
@@ -166,25 +177,96 @@ public class UserController extends HttpServlet {
                     request.setAttribute("confirmPasswordError", "Passwords do not match.");
                     hasErrors = true;
                 }
-                if (!Validate.checkPhone(rphone)) {
-                    request.setAttribute("phoneNumberError", "Invalid phone number. Please enter a valid 10-digit phone number.");
-                    hasErrors = true;
-                }
 
                 if (hasErrors) {
                     request.getRequestDispatcher("register.jsp").forward(request, response);
                 } else {
                     Account account = dal.getAccountsByEmail(email);
-                    if (account != null) { // Đã có tài khoản với email này
+                    if (account != null) { // Account with this email already exists
                         request.setAttribute("emailError", "Email already exists!");
                         request.getRequestDispatcher("register.jsp").forward(request, response);
-                    } else { // Chưa có tài khoản với email này
+                    } else { // No account with this email
+                        // Check for existing user_name
+                        Account existingUser = dal.getAccountsByUserName(user_name);
+                        if (existingUser != null) {
+                            // Append two random digits to user_name
+                            user_name += String.valueOf((int) (Math.random() * 999 + 10));
+                        }
+
                         // Encrypt password before storing in the database
                         String encryptedPassword = Encode.enCode(password);
-                        dal.insertAccount(name, user_name, email, rphone, encryptedPassword, setting, status);
-                        request.setAttribute("success", "Registration successful!");
-                        request.getRequestDispatcher("register.jsp").forward(request, response);
+                        dal.insertAccount(name, user_name, email, encryptedPassword, setting, status, verified);
+
+                        // Generate OTP
+                        String otp = generateOTP();
+
+                        // Send OTP to user's email
+                        String subject = "Email Verification";
+                        String content = "<h1>Welcome to our platform!</h1>"
+                                + "<p>Your OTP for email verification is: <strong>" + otp + "</strong></p>"
+                                + "<p>Please enter this code on the verification page to complete your registration.</p>";
+
+                        boolean emailSent = JavaMail.sendEmail(email, subject, content);
+
+                        if (emailSent) {
+                            // Save OTP in session (or database)
+                            request.getSession().setAttribute("otp", otp);
+                            request.getSession().setAttribute("email", email);
+
+                            // Redirect to OTP verification page
+                            response.sendRedirect("verifyOtp.jsp");
+                        } else {
+                            // Handle email sending failure
+                            request.setAttribute("emailError", "Failed to send verification email. Please try again.");
+                            request.getRequestDispatcher("register.jsp").forward(request, response);
+                        }
                     }
+                }
+            }
+
+            // verifyOtp
+            if (action.equals("verifyOtp")) {
+                String otp = request.getParameter("otp");
+                String sessionOtp = (String) request.getSession().getAttribute("otp");
+                String email = (String) request.getSession().getAttribute("email");
+
+                if (otp != null && otp.equals(sessionOtp)) {
+                    // OTP is correct, mark email as verified
+                    dal.updateEmailVerifiedStatus(email);
+                    request.getSession().removeAttribute("otp");
+                    request.getSession().removeAttribute("email");
+                    response.sendRedirect("login.jsp");
+                } else {
+                    // OTP is incorrect, show error message
+                    request.setAttribute("otpError", "Invalid OTP. Please try again.");
+                    request.getRequestDispatcher("verifyOtp.jsp").forward(request, response);
+                }
+            }
+            // resend OTP
+            if (action.equals("resendOtp")) {
+                String email = (String) session.getAttribute("email");
+                if (email != null) {
+                    // Generate new OTP
+                    String otp = generateOTP();
+
+                    // Send OTP to user's email
+                    String subject = "Resend OTP Verification";
+                    String content = "<h1>Here is your new OTP!</h1>"
+                            + "<p>Your OTP for email verification is: <strong>" + otp + "</strong></p>"
+                            + "<p>Please enter this code on the verification page to complete your registration.</p>";
+
+                    boolean emailSent = JavaMail.sendEmail(email, subject, content);
+
+                    if (emailSent) {
+                        // Save new OTP in session
+                        session.setAttribute("otp", otp);
+                        response.sendRedirect("verifyOtp.jsp");
+                    } else {
+                        request.setAttribute("otpError", "Failed to resend verification email. Please try again.");
+                        request.getRequestDispatcher("verifyOtp.jsp").forward(request, response);
+                    }
+                } else {
+                    response.sendRedirect("home");
                 }
             }
             // recover
@@ -193,17 +275,35 @@ public class UserController extends HttpServlet {
             }
             // check email
             if (action.equals("checkmail")) {
-                String email = request.getParameter("email");
-                request.setAttribute(email, "email");
+                if (request.getMethod().equalsIgnoreCase("POST")) {
+                    String email = request.getParameter("email");
+                    request.setAttribute("email", email);
 
-                Account account = dal.getAccountsByEmail(email);
-                if (account != null) {
-                    request.getRequestDispatcher("OTPMail.jsp").forward(request, response);
-                } else {
-                    request.setAttribute("emailError", "Email not found");
-                    request.getRequestDispatcher("checkMail.jsp").forward(request, response);
+                    Account account = dal.getAccountsByEmail(email);
+                    if (account != null) {
+                        String otp = generateOTP();
+
+                        String subject = "Email Verification";
+                        String content = "<h1>Welcome to our platform!</h1>"
+                                + "<p>Your OTP for email verification is: <strong>" + otp + "</strong></p>"
+                                + "<p>Please enter this code on the verification page to complete your registration.</p>";
+                        boolean emailSent = JavaMail.sendEmail(email, subject, content);
+
+                        if (emailSent) {
+                            request.getSession().setAttribute("otp", otp);
+                            request.getSession().setAttribute("email", email);
+                            response.sendRedirect("verifyOtp.jsp");
+                            return;
+                        } else {
+                            request.setAttribute("emailError", "Failed to send verification email. Please try again.");
+                        }
+                    } else {
+                        request.setAttribute("emailError", "Email not found. Please check your email or register.");
+                    }
                 }
+                request.getRequestDispatcher("checkMailVerified.jsp").forward(request, response);
             }
+
             // recover pass
             if (action.equals("recoverpass")) {
                 // chưa biết đường dẫn web ntn
@@ -294,6 +394,10 @@ public class UserController extends HttpServlet {
                     hasErrors = true;
                 }
 
+                request.setAttribute("fullname", fullname);
+                request.setAttribute("username", username);
+                request.setAttribute("phone", phone);
+
                 if (hasErrors) {
                     request.getRequestDispatcher("profile.jsp").forward(request, response);
                     return;
@@ -312,11 +416,6 @@ public class UserController extends HttpServlet {
                     // Update account object in session
                     session.setAttribute("account", account);
 
-                    // Update other session attributes if needed
-                    session.setAttribute("fullname", fullname);
-                    session.setAttribute("username", username);
-                    session.setAttribute("phone", phone);
-
                     // Handle avatar URL
                     String avatarUrl = account.getAvatar_url();
                     if (avatarUrl == null || avatarUrl.isEmpty()) {
@@ -334,6 +433,10 @@ public class UserController extends HttpServlet {
                 String oldPassword = request.getParameter("oldpassword");
                 String newPassword = request.getParameter("newpassword");
                 String confirmPassword = request.getParameter("renewpassword");
+
+                request.setAttribute("oldPassword", oldPassword);
+                request.setAttribute("newPassword", newPassword);
+                request.setAttribute("confirmPass", confirmPassword);
 
                 boolean hasErrors = false;
 
@@ -369,6 +472,9 @@ public class UserController extends HttpServlet {
                         session.setAttribute("account", account);
 
                         request.setAttribute("passsuccess", "You have successfully changed your password!");
+                        session.invalidate();
+                        response.sendRedirect("login.jsp?message=Password changed successfully, please login again.");
+                        return;
                     }
                 }
 
@@ -410,6 +516,12 @@ public class UserController extends HttpServlet {
         }
 
         return uniqueFileName;
+    }
+
+    private String generateOTP() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+        return String.valueOf(otp);
     }
 
 }

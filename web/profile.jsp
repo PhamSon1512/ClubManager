@@ -130,7 +130,7 @@
                                         <div class="col-md-6">
                                             <div class="mb-4">
                                                 <label class="form-label">Full Name<span class="text-danger">*</span></label>
-                                                <input name="fullname" id="fullName" value="<%= account.getFullname() %>" type="text" class="form-control">
+                                                <input name="fullname" id="fullName" value="${requestScope.fullname != null ? requestScope.fullname : account.fullname}" type="text" class="form-control">
                                                 <div id="fullnameError" class="text-danger">
                                                     <%= request.getAttribute("fullnameError") != null ? request.getAttribute("fullnameError") : "" %>
                                                 </div>
@@ -140,7 +140,7 @@
                                         <div class="col-md-6">
                                             <div class="mb-4">
                                                 <label class="form-label">Username<span class="text-danger">*</span></label>
-                                                <input name="username" value="<%= account.getUsername() %>" id="username" type="text" class="form-control">
+                                                <input name="username" value="${requestScope.username != null ? requestScope.username : account.username}" id="username" type="text" class="form-control">
                                                 <div id="usernameError" class="text-danger">
                                                     <%= request.getAttribute("usernameError") != null ? request.getAttribute("usernameError") : "" %>
                                                 </div>
@@ -149,15 +149,8 @@
 
                                         <div class="col-md-6">
                                             <div class="mb-4">
-                                                <label class="form-label">Email<span class="text-danger">*</span></label>
-                                                <input name="email" oninvalid="CheckEmail(this);" oninput="CheckEmail(this);" value="<%= account.getEmail() %>" id="email" type="email" class="form-control" readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="mb-4">
                                                 <label class="form-label">Phone Number<span class="text-danger">*</span></label>
-                                                <input name="phone" value="<%= account.getPhone_number() %>" id="number" type="text" class="form-control">
+                                                <input name="phone" value="${requestScope.phone != null ? requestScope.phone : account.phone_number}" id="number" type="text" class="form-control">
                                                 <div id="phoneNumberError" class="text-danger">
                                                     <%= request.getAttribute("phoneNumberError") != null ? request.getAttribute("phoneNumberError") : "" %>
                                                 </div>
@@ -225,7 +218,7 @@
                                         <div class="col-lg-12">
                                             <div class="mb-3">
                                                 <label class="form-label">Confirm New Password :<span class="text-danger">*</span></label>
-                                                <input value="${confirmPassword}" type="password" name="renewpassword" class="form-control" required="">
+                                                <input value="${confirmPass}" type="password" name="renewpassword" class="form-control" required="">
                                             </div>
                                         </div>
                                         <!--end col-->
@@ -244,7 +237,6 @@
 
                         <jsp:include page="layout/footer.jsp"/>
                         <a href="#" onclick="topFunction()" id="back-to-top" class="btn btn-icon btn-pills btn-primary back-to-top"><i data-feather="arrow-up" class="icons"></i></a>
-                            <jsp:include page="layout/search.jsp"/>
 
                         <script src="assets/js/bootstrap.bundle.min.js"></script>
                         <script src="assets/js/feather.min.js"></script>
@@ -255,11 +247,10 @@
                                     var reader = new FileReader();
                                     reader.onload = function (e) {
                                         $("#thumbimage").attr('src', e.target.result);
-                                    }
+                                    };
                                     reader.readAsDataURL(input.files[0]);
                                 } else { // Sử dụng cho IE
                                     $("#thumbimage").attr('src', input.value);
-
                                 }
                                 $("#thumbimage").show();
                                 $('.filename').text($("#uploadfile").val());
@@ -267,11 +258,12 @@
                                 $(".Update").show();
                                 $(".removeimg").show();
                             }
+
                             $(document).ready(function () {
                                 $(".Choicefile").bind('click', function () {
                                     $("#uploadfile").click();
-
                                 });
+
                                 $(".removeimg").click(function () {
                                     $("#thumbimage").attr('src', '').hide();
                                     $("#myfileupload").html('<input type="file" id="uploadfile"  onchange="readURL(this);" />');
@@ -280,8 +272,9 @@
                                     $(".Update").hide();
                                     $(".filename").text("");
                                 });
-                            })
+                            });
                         </script>
+
                         </body>
 
                         </html>

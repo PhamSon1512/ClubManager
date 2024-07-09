@@ -21,44 +21,35 @@ public class CategoryClubController extends HttpServlet {
         String categoryIdParam = request.getParameter("categoryId");
 
         if (categoryIdParam != null && !categoryIdParam.isEmpty()) {
-            try {
-                int categoryId = Integer.parseInt(categoryIdParam);
 
-                List<Category> listCategories = new ClubDAO().getAllCategories();
-                request.setAttribute("listCategories", listCategories);
+            int categoryId = Integer.parseInt(categoryIdParam);
 
-                List<Club> listClubs = new ClubDBContext().getClubsByCategoryId(categoryId);
+            List<Category> listCategories = new ClubDAO().getAllCategories();
+            request.setAttribute("listCategories", listCategories);
 
-                int page = 1;
-                int recordsPerPage = 3;
+            List<Club> listClubs = new ClubDBContext().getClubsByCategoryId(categoryId);
 
-                if (request.getParameter("page") != null) {
-                    page = Integer.parseInt(request.getParameter("page"));
-                }
+            int page = 1;
+            int recordsPerPage = 3;
 
-                int start = (page - 1) * recordsPerPage;
-
-                int end = Math.min(start + recordsPerPage, listClubs.size());
-
-                List<Club> sublistClubs = listClubs.subList(start, end);
-
-                // Set attributes for JSP
-                request.setAttribute("listClubs", sublistClubs);
-                request.setAttribute("currentPage", page);
-                request.setAttribute("totalPages", Math.ceil((double) listClubs.size() / recordsPerPage));
-                request.setAttribute("tag", categoryId);
-
-                // Forward to index.jsp for rendering
-                request.getRequestDispatcher("index.jsp").forward(request, response);
-
-            } catch (NumberFormatException e) {
-
-                e.printStackTrace();
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid categoryId parameter");
+            if (request.getParameter("page") != null) {
+                page = Integer.parseInt(request.getParameter("page"));
             }
-        } else {
 
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing categoryId parameter");
+            int start = (page - 1) * recordsPerPage;
+
+            int end = Math.min(start + recordsPerPage, listClubs.size());
+
+            List<Club> sublistClubs = listClubs.subList(start, end);
+
+            // Set attributes for JSP
+            request.setAttribute("listClubs", sublistClubs);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", Math.ceil((double) listClubs.size() / recordsPerPage));
+            request.setAttribute("tag", categoryId);
+
+            // Forward to index.jsp for rendering
+            request.getRequestDispatcher("index.jsp").forward(request, response);
         }
     }
 

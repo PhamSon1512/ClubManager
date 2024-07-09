@@ -39,7 +39,7 @@
                     <div class="col-lg-7">
                         <div class="card border-0 shadow rounded overflow-hidden">
                             <div class="tab-content p-4" id="pills-tabContent">
-                                <form action="registerclub" method="POST">
+                                <form action="regisclub" method="POST">
                                     <div class="row">
                                         <div class="p-6">
                                             <h4 class="mb-0">Profile</h4>

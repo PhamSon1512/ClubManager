@@ -15,7 +15,7 @@
 
 
         <jsp:include page="layout/menu.jsp"/>
-        
+
         <c:choose>
             <c:when test="${not empty param.categoryId}">
                 <!-- Section for displaying clubs based on categoryId -->
@@ -33,14 +33,17 @@
                         </div>
                     </div>
                 </section>
-                <div class="row mt-4">
-                <div class="col-md-6 offset-md-3">
-                    <form action="search" class="d-flex">
-                        <input class="form-control me-2" type="search" name="keyword" placeholder="Search club..." aria-label="Search">
-                        <button class="btn btn-outline-primary" type="submit">Search</button>
-                    </form>
+                <div class="container mt-4">
+                    <div class="row">
+                        <div class="col-md-6 offset-md-3">
+                            <form action="search" method="get" class="d-flex">
+                                <input class="form-control me-2" type="search" name="keyword" placeholder="Search club..." aria-label="Search">
+                                <input type="hidden" name="categoryId" value="${param.categoryId}">
+                                <button class="btn btn-outline-primary" type="submit">Search</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
                 <!-- Section to display clubs based on categoryId -->
                 <section class="container" style="margin-top: 50px;">
@@ -340,9 +343,7 @@
 
         <a href="#" onclick="topFunction()" id="back-to-top" class="btn btn-icon btn-pills btn-primary back-to-top"><i data-feather="arrow-up" class="icons"></i></a>
 
-        <jsp:include page="layout/search.jsp"/>
 
-        <jsp:include page="layout/facebookchat.jsp"/>
         <div class="modal fade" id="watchvideomodal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content video-modal rounded overflow-hidden">

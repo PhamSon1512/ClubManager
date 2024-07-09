@@ -1,9 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.admin;
 
+import com.google.gson.Gson;
+import config.Encode;
+import config.Validate;
 import dal.AccountDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -30,7 +29,7 @@ public class AccountManager extends HttpServlet {
         String action = request.getParameter("action");
 
         try {
-            // Mặc định hiển thị tất cả tài khoản nếu không có action hoặc action là "all"
+            // list user
             if (action == null || action.equals("all")) {
                 accountList = accountDAO.listAcc();
                 if (accountList != null && !accountList.isEmpty()) {
@@ -53,50 +52,168 @@ public class AccountManager extends HttpServlet {
                 }
                 request.getRequestDispatcher("admin/account.jsp").forward(request, response);
             }
-            // Thêm các action khác nếu cần
+            // add user
+            if (action.equals("add")) {
+                String fullname = request.getParameter("fullname");
+                String username = request.getParameter("fullname");
+                String email = request.getParameter("email");
+                int setting = Integer.parseInt(request.getParameter("setting"));
+                int role = Integer.parseInt(request.getParameter("status"));
+                boolean verified = false;
+                boolean hasErrors = false;
+
+                // Validation checks
+                if (!Validate.checkFullName(fullname)) {
+                    request.setAttribute("fullnameError", "Invalid full name. Please enter a valid name.");
+                    hasErrors = true;
+                }
+                if (!Validate.checkEmail(email)) {
+                    request.setAttribute("emailError", "Invalid email format. Please enter a valid email.");
+                    hasErrors = true;
+                }
+                if (accountDAO.getAccountsByEmail(email) != null) {
+                    request.setAttribute("emailError", "Email already exists. Please use a different email.");
+                    hasErrors = true;
+                }
+
+                if (hasErrors) {
+                    request.setAttribute("showAddUserModal", true);
+                    request.getRequestDispatcher("admin/account.jsp").forward(request, response);
+                } else {
+                    String defaultPassword = Encode.enCode("12345678aZ");
+                    accountDAO.insertAccount(fullname, username, email, defaultPassword, setting, role, verified);
+                    response.sendRedirect("account?action=all&success=1");
+                }
+            }
+            //search
+            if (action.equals("search")) {
+                String searchTerm = request.getParameter("search");
+                if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                    accountList = accountDAO.searchAccounts(searchTerm);
+                } else {
+                    accountList = accountDAO.listAcc();
+                }
+
+                int page = 1;
+                int numPerPage = 8;
+                int size = accountList.size();
+                int num = (size % numPerPage == 0) ? (size / numPerPage) : ((size / numPerPage) + 1);
+                String xPage = request.getParameter("page");
+                if (xPage != null) {
+                    page = Integer.parseInt(xPage);
+                }
+                int start = (page - 1) * numPerPage;
+                int end = Math.min(page * numPerPage, size);
+                List<Account> pagedAccounts = accountDAO.getListByPage(accountList, start, end);
+
+                request.setAttribute("page", page);
+                request.setAttribute("num", num);
+                request.setAttribute("accountList", pagedAccounts);
+                request.setAttribute("searchTerm", searchTerm);
+                request.getRequestDispatcher("admin/account.jsp").forward(request, response);
+            }
+            //change status
+            if (action.equals("toggleStatus")) {
+                int userId = Integer.parseInt(request.getParameter("userId"));
+                int newStatus = Integer.parseInt(request.getParameter("newStatus"));
+
+                boolean success = accountDAO.updateAccountStatus(userId, newStatus);
+
+                if (success) {
+                    response.getWriter().write("success");
+                } else {
+                    response.getWriter().write("failed");
+                }
+                return;
+            }
+            // Get user information
+            if (action.equals("getUserInfo")) {
+                int userId = Integer.parseInt(request.getParameter("userId"));
+                Account account = accountDAO.getAccountById(userId);
+                if (account != null) {
+                    Gson gson = new Gson();
+                    String jsonAccount = gson.toJson(account);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(jsonAccount);
+                }
+            }
+            // Edit user information
+            if (action.equals("edit")) {
+                String userIdParam = request.getParameter("userId");
+                if (userIdParam != null && !userIdParam.isEmpty()) {
+                    try {
+                        int userId = Integer.parseInt(userIdParam);
+                        Account accountToEdit = accountDAO.getAccountById(userId);
+                        if (accountToEdit != null) {
+                            Gson gson = new Gson();
+                            String jsonAccount = gson.toJson(accountToEdit);
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write(jsonAccount);
+                        } else {
+                            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                            response.getWriter().write("User not found");
+                        }
+                    } catch (NumberFormatException e) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        response.getWriter().write("Invalid user ID format");
+                    }
+                } else {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().write("User ID is missing");
+                }
+            }
+            // Update user information
+            if (action.equals("updateUser")) {
+                String userIdStr = request.getParameter("userId");
+                String fullname = request.getParameter("fullname");
+                String username = request.getParameter("username");
+                String phoneNumber = request.getParameter("phone");
+                String roleStr = request.getParameter("role");
+
+                if (userIdStr != null && !userIdStr.isEmpty() && roleStr != null && !roleStr.isEmpty()) {
+                    try {
+                        int userId = Integer.parseInt(userIdStr);
+                        int role = Integer.parseInt(roleStr);
+
+                        boolean success = accountDAO.updateAccount(userId, fullname, username, phoneNumber, role);
+                        if (success) {
+                            response.getWriter().write("success");
+                        } else {
+                            response.getWriter().write("fail");
+                        }
+                    } catch (NumberFormatException e) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        response.getWriter().write("Invalid user ID or role.");
+                    }
+                } else {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().write("Missing required parameters.");
+                }
+            }
         } catch (Exception e) {
             System.out.println("Error in AccountManager: " + e.getMessage());
-            request.setAttribute("error", "An error occurred while processing your request.");
+            e.printStackTrace(); // In ra stack trace để debug
+            request.setAttribute("error", "An error occurred while updating user information: " + e.getMessage());
+            request.getRequestDispatcher("admin/account.jsp").forward(request, response);
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }
