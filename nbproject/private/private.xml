@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/SWP391/ClubMangement/web/admin/account.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/changePassword.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/verifyOtp.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/dal/AccountDAO.java</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/config/Encode.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/blog.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/401.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/controller/admin/AccountManager.java</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/dal/BlogDAO.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/registerclub.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/controller/home/RegisterClubController.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/dashboard.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/checkMailVerified.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/admin/layout/menu.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/register.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/dal/ClubDBContext.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/layout/menu.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/layout/menu_white.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/viewregistration.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/context/DBContext.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/setting.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/admin/layout/adminhead.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/OTPMail.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/controller/home/BlogController.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/profile.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/controller/admin/RegisterClubManager.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/blogDetails.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/model/GoogleAccount.java</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/controller/home/UserController.java</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/controller/admin/ManagerRegistrationServlet.java</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/Email/JavaMail.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/layout/profileMenu.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/model/Account.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/login.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/web/layout/clubmanage.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/model/Setting.java</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/config/Validate.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/checkMail.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/resource/database.properties</file>
+            <file>file:/D:/SWP391/ClubMangement/web/admin/layout/headmenu.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/resource/email.properties</file>
+            <file>file:/D:/SWP391/ClubMangement/web/admin/layout/footer.jsp</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/controller/admin/DashboardController.java</file>
+            <file>file:/D:/SWP391/ClubMangement/src/java/dal/ClubDAO.java</file>
+            <file>file:/D:/SWP391/ClubMangement/web/WEB-INF/web.xml</file>
+        </group>
+    </open-files>
+</project-private>
