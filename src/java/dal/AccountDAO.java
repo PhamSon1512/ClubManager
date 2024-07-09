@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import model.Account;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.GoogleAccount;
@@ -58,7 +57,12 @@ public class AccountDAO extends DBContext {
                 + "FROM [user] u "
                 + "INNER JOIN setting s ON u.setting_id = s.setting_id "
                 + "WHERE u.email = ?";
+<<<<<<< HEAD
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
+=======
+        try (
+            PreparedStatement statement = connection.prepareStatement(sql)) {
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
             statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -75,6 +79,7 @@ public class AccountDAO extends DBContext {
         return account;
     }
 
+<<<<<<< HEAD
     public Account getAccountsByUserName(String userName) {
         Account account = null;
         String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.setting_id, u.status, u.note, u.verified "
@@ -156,6 +161,10 @@ public class AccountDAO extends DBContext {
         }
         return false;
     }
+=======
+    public ArrayList<Account> listAcc() {
+        ArrayList acc = new ArrayList();
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
 
     public GoogleAccount getGoogleAccountByEmail(String email) {
         GoogleAccount googleAccount = null;
@@ -227,7 +236,7 @@ public class AccountDAO extends DBContext {
 
     public void changePassword(String email, String newPassword) {
         try {
-            String sql = "UPDATE [user] SET password = ? WHERE email = ?";
+            String sql = "UPDATE account SET password = ? WHERE email = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, newPassword);
             statement.setString(2, email);
@@ -237,13 +246,17 @@ public class AccountDAO extends DBContext {
         }
     }
 
-    public void changeInformations(String fullname, String username, String phone, int userId) {
+    public void changeInformations( String fullname, String username, String phone,int userId) {
         try {
+<<<<<<< HEAD
             String sql = "UPDATE [user] SET full_name = ?, [user_name] = ?, phone_number = ? WHERE [user_id] = ?";
+=======
+            String sql = "UPDATE account SET full_name = ?,[user_name] = ?, phone_number = ? WHERE [user_id] = ?";
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, fullname);
             statement.setString(2, username);
-            statement.setString(3, phone);
+            statement.setString(3, phone);  
             statement.setInt(4, userId);
             statement.executeUpdate();
         } catch (SQLException ex) {
@@ -253,7 +266,7 @@ public class AccountDAO extends DBContext {
 
     public void updatePasswordByEmail(String email, String newPassword) {
         try {
-            String sql = "UPDATE [user] SET password = ? WHERE email = ?";
+            String sql = "UPDATE account SET password = ? WHERE email = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, newPassword);
             statement.setString(2, email);
@@ -378,6 +391,7 @@ public class AccountDAO extends DBContext {
     }
 
     public static void main(String[] args) {
+<<<<<<< HEAD
         AccountDAO accountDAO = new AccountDAO();
 
         // Thông tin cần cập nhật
@@ -418,5 +432,23 @@ public class AccountDAO extends DBContext {
         } else {
             System.out.println("User not found!");
         }
+=======
+    AccountDAO dao = new AccountDAO();
+    Account account = dao.getAccountsByEmail("sodoku18@gmail.com");
+    if (account != null) {
+        System.out.println("User ID: " + account.getUser_id());
+        System.out.println("Full Name: " + account.getFullname());
+        System.out.println("User Name: " + account.getUsername());
+        System.out.println("Email: " + account.getEmail());
+        System.out.println("Phone Number: " + account.getPhone_number());
+        System.out.println("Password: " + account.getPassword());
+        System.out.println("Avatar URL: " + account.getAvatar_url());
+        System.out.println("Setting ID: " + account.getSetting().getSetting_id());
+        System.out.println("Status: " + account.getStatus());
+        System.out.println("Note: " + account.getNote());
+    } else {
+        System.out.println("Account not found");
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
     }
+}
 }

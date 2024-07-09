@@ -124,11 +124,19 @@
                                                 </div>
                                                 <span class="text-muted" style="text-decoration: none;">${L.code}</span>
                                             </div>
+<<<<<<< HEAD
 </div>
                                         <!-- Product actions-->
                                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                             <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="add-to-cart?productId=${L.club_id}">Join</a></div>
                                         </div>
+=======
+                                        </div>
+                                        <!-- Product actions-->
+                                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="add-to-cart?productId=${L.club_id}">Join</a></div>
+                                        </div>
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
                                     </a>
                                 </div>
                             </div>
@@ -140,6 +148,12 @@
 
         <jsp:include page="layout/footer.jsp"/>
 
+<<<<<<< HEAD
+=======
+        <jsp:include page="layout/search.jsp"/>
+        <jsp:include page="layout/facebookchat.jsp"/>
+
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <script src="assets/js/tiny-slider.js"></script>
         <script src="assets/js/tiny-slider-init.js"></script>
@@ -147,4 +161,8 @@
         <script src="assets/js/feather.min.js"></script>
         <script src="assets/js/app.js"></script>
     </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655

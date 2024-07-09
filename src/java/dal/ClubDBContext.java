@@ -35,13 +35,17 @@ public class ClubDBContext extends DBContext {
 
     public List<Club> getAllClubs() {
         List<Club> list = new ArrayList<>();
+<<<<<<< HEAD
         String sql = "SELECT club_id, code, name, category_id, description, status, imageUrl, numberPhone, facebook FROM club";
+=======
+        String sql = "SELECT code, name, description, status, imageUrl, category_id, phoneNumber, facebook FROM club";
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
 
         try (PreparedStatement stm = conn.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
 
             while (rs.next()) {
                 Club club = new Club();
-                club.setClub_id(rs.getInt("club_id"));
+               
                 club.setCode(rs.getString("code"));
                 club.setName(rs.getString("name"));
 
@@ -247,10 +251,22 @@ public class ClubDBContext extends DBContext {
                 club.setDescription(rs.getString("description"));
                 club.setStatus(rs.getBoolean("status"));
                 club.setImageUrl(rs.getString("imageUrl"));
+<<<<<<< HEAD
 
                 club.setCategory_id(rs.getInt("category_id"));
                 club.setPhoneNumber(rs.getString("numberPhone"));
                 club.setFacebook(rs.getString("facebook"));
+=======
+                club.setPhoneNumber(rs.getString("phoneNumber"));
+                club.setFacebook(rs.getString("facebook"));
+                int categoryId = rs.getInt("category_id");
+                if (rs.wasNull()) {
+                    club.setCategory_id(0); // or any other default value for your use case
+                } else {
+                    club.setCategory_id(categoryId);
+                }
+
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
                 list.add(club);
             }
         } catch (SQLException ex) {
@@ -366,6 +382,7 @@ public class ClubDBContext extends DBContext {
         return 0;
     }
 
+<<<<<<< HEAD
     public List<Club> search(String keyword) {
         List<Club> list = new ArrayList<>();
         try {
@@ -388,10 +405,52 @@ public class ClubDBContext extends DBContext {
             }
         } catch (SQLException ex) {
             Logger.getLogger(ClubDBContext.class.getName()).log(Level.SEVERE, null, ex);
+=======
+   public List<Club> search(String keyword) {
+    List<Club> list = new ArrayList<>();
+    try {
+        String sql = "SELECT * FROM club WHERE LOWER(name) LIKE LOWER(?)";
+        PreparedStatement stm = conn.prepareStatement(sql);
+        stm.setString(1, "%" + keyword + "%"); // Use wildcards for partial matching
+
+        ResultSet rs = stm.executeQuery();
+        while (rs.next()) {
+            Club club = new Club();
+            club.setClub_id(rs.getInt(1));
+            club.setCode(rs.getString(2));
+            club.setName(rs.getString(3));
+            club.setDescription(rs.getString(4));
+            club.setStatus(rs.getBoolean(5));
+            club.setImageUrl(rs.getString(6));
+            club.setCategory_id(rs.getInt(7));
+
+            list.add(club);
         }
-        return list;
+    } catch (SQLException ex) {
+        Logger.getLogger(ClubDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return list;
+}
+
+    public void insertClub(String code, String name, String description, String imageUrl, int category_id, String phoneNumber, String facebook) {
+        try {
+            String sql = "INSERT INTO [club] (code, name, description, imageUrl, category_id, phoneNumber, facebook) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, code);
+            statement.setString(2, name);
+            statement.setString(3, description);
+            statement.setString(4, imageUrl);
+            statement.setInt(5, category_id);
+            statement.setString(6, phoneNumber);
+            statement.setString(7, facebook);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
+        }
     }
 
+<<<<<<< HEAD
     public void insertClub(String code, String name, String description, String imageUrl, int category_id, String phoneNumber, String facebook) {
         try {
             String sql = "INSERT INTO [club] (code, name, description, imageUrl, category_id, numberPhone, facebook) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -407,6 +466,15 @@ public class ClubDBContext extends DBContext {
         } catch (SQLException ex) {
             Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+=======
+    public static void main(String[] args) {
+        ClubDBContext dao = new ClubDBContext();
+        List<Club> club = dao.getAllClubs();
+        for (Club club1 : club) {
+            System.out.println(club1.getCode());
+        }
+       
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
     }
 
     public static void main(String[] args) {

@@ -19,8 +19,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+<<<<<<< HEAD
 import java.util.Random;
 import java.util.UUID;
+=======
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Account;
@@ -35,13 +38,12 @@ import model.Setting;
         maxRequestSize = 1024 * 1024 * 100) // 100MB
 public class UserController extends HttpServlet {
 
-    Validate validate = new Validate();
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        Validate validate = new Validate();
 
         HttpSession session = request.getSession();
         AccountDAO dal = new AccountDAO();
@@ -161,15 +163,15 @@ public class UserController extends HttpServlet {
 
                 // Validate input fields
                 boolean hasErrors = false;
-                if (!Validate.checkFullName(name)) {
+                if (!validate.checkFullName(name)) {
                     request.setAttribute("fullnameError", "Invalid full name. Please enter a valid name.");
                     hasErrors = true;
                 }
-                if (!Validate.checkEmail(email)) {
+                if (!validate.checkEmail(email)) {
                     request.setAttribute("emailError", "Invalid email format. Please enter a valid email.");
                     hasErrors = true;
                 }
-                if (!Validate.checkPassword(password)) {
+                if (!validate.checkPassword(password)) {
                     request.setAttribute("passwordError", "Invalid password. Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a digit.");
                     hasErrors = true;
                 }
@@ -177,6 +179,13 @@ public class UserController extends HttpServlet {
                     request.setAttribute("confirmPasswordError", "Passwords do not match.");
                     hasErrors = true;
                 }
+<<<<<<< HEAD
+=======
+                if (!validate.checkPhone(rphone)) {
+                    request.setAttribute("phoneNumberError", "Invalid phone number. Please enter a valid 10-digit phone number.");
+                    hasErrors = true;
+                }
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
 
                 if (hasErrors) {
                     request.getRequestDispatcher("register.jsp").forward(request, response);
@@ -317,69 +326,38 @@ public class UserController extends HttpServlet {
                 Account account = (Account) request.getSession().getAttribute("account");
                 int userId = account.getUser_id();
                 Part filePart = request.getPart("image");
-
                 if (filePart != null && filePart.getSize() > 0) {
                     String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                    String contentType = filePart.getContentType();
-
-                    // Check if the uploaded file is an image
-                    if (contentType.startsWith("image/")) {
-                        String uploadDirPath = getServletContext().getRealPath("/assets/uploads");
-                        File uploadDir = new File(uploadDirPath);
-
-                        if (!uploadDir.exists()) {
-                            uploadDir.mkdirs();
-                        }
-
-                        // Generate unique file name to avoid conflicts
-                        String uniqueFileName = generateUniqueFileName(uploadDirPath, fileName);
-
-                        String filePath = uploadDirPath + File.separator + uniqueFileName;
-                        Path path = Paths.get(filePath);
-
-                        try {
-                            // Delete old file if exists
-                            if (account.getAvatar_url() != null && !account.getAvatar_url().isEmpty()) {
-                                String oldFileName = account.getAvatar_url().substring(account.getAvatar_url().lastIndexOf('/') + 1);
-                                Path oldFilePath = Paths.get(uploadDirPath + File.separator + oldFileName);
-                                Files.deleteIfExists(oldFilePath);
-                            }
-
-                            // Save new file
-                            Files.deleteIfExists(path); // Delete new file if it already exists (for safety)
-                            Files.copy(filePart.getInputStream(), path);
-
-                            // Update avatar URL in database
-                            String avatarUrl = "assets/uploads/" + uniqueFileName;
-                            dal.updateAvatar(userId, avatarUrl);
-
-                            // Update session attribute
-                            account.setAvatar_url(avatarUrl);
-                            request.getSession().setAttribute("account", account);
-
-                            // Redirect with success message
-                            response.sendRedirect("profile.jsp?success=true");
-                        } catch (IOException | SQLException ex) {
-                            // Handle exceptions
-                            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
-                            response.sendRedirect("profile.jsp?success=false&error=sql");
-                        }
-                    } else {
-                        // Handle case where the uploaded file is not an image
-                        response.sendRedirect("profile.jsp?success=false&error=Invalid file type");
+                    String uploadDirPath = getServletContext().getRealPath("/assets/uploads");
+                    File uploadDir = new File(uploadDirPath);
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdirs();
+                    }
+                    String filePath = uploadDirPath + File.separator + fileName;
+                    Path path = Paths.get(filePath);
+                    Files.deleteIfExists(path); // Delete old file if it exists
+                    filePart.write(filePath); // Save new file
+                    String avatarUrl = "assets/uploads/" + fileName;
+                    try {
+                        dal.updateAvatar(userId, avatarUrl);
+                        account.setAvatar_url(avatarUrl);
+                        request.getSession().setAttribute("account", account);
+                        response.sendRedirect("profile.jsp?success=true");
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                        response.sendRedirect("profile.jsp?success=false&error=sql");
                     }
                 } else {
-                    // Handle case where no image is uploaded
                     response.sendRedirect("profile.jsp?success=false&error=No image");
                 }
             }
-
             // update profile
             if (action.equals("update_profile")) {
                 String fullname = request.getParameter("fullname");
                 String phone = request.getParameter("phone");
                 String username = request.getParameter("username");
 
+<<<<<<< HEAD
                 boolean hasErrors = false;
                 if (!Validate.checkFullName(fullname)) {
                     request.setAttribute("fullnameError", "Invalid full name. Please enter a valid name.");
@@ -402,6 +380,8 @@ public class UserController extends HttpServlet {
                     request.getRequestDispatcher("profile.jsp").forward(request, response);
                     return;
                 }
+=======
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
                 Account account = (Account) session.getAttribute("account");
 
                 if (account != null) {
@@ -434,6 +414,7 @@ public class UserController extends HttpServlet {
                 String newPassword = request.getParameter("newpassword");
                 String confirmPassword = request.getParameter("renewpassword");
 
+<<<<<<< HEAD
                 request.setAttribute("oldPassword", oldPassword);
                 request.setAttribute("newPassword", newPassword);
                 request.setAttribute("confirmPass", confirmPassword);
@@ -446,14 +427,27 @@ public class UserController extends HttpServlet {
                     hasErrors = true;
                 }
 
+=======
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
                 Account account = (Account) session.getAttribute("account");
 
                 if (account != null) {
                     String decodedPassword = Encode.deCode(account.getPassword());
+                    if (decodedPassword.equals(oldPassword)) {
+                        if (newPassword.equals(confirmPassword)) {
+                            String encodedNewPassword = Encode.enCode(newPassword);
+                            dal.updatePasswordByEmail(account.getEmail(), encodedNewPassword);
 
-                    // Check if old password is correct
-                    if (!decodedPassword.equals(oldPassword)) {
+                            account.setPassword(encodedNewPassword);
+                            session.setAttribute("account", account);
+
+                            request.setAttribute("passsuccess", "You have successfully changed your password!");
+                        } else {
+                            request.setAttribute("passerror", "New password does not match!");
+                        }
+                    } else {
                         request.setAttribute("passerror", "Old password is incorrect!");
+<<<<<<< HEAD
                         hasErrors = true;
                     }
 
@@ -475,12 +469,13 @@ public class UserController extends HttpServlet {
                         session.invalidate();
                         response.sendRedirect("login.jsp?message=Password changed successfully, please login again.");
                         return;
+=======
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
                     }
                 }
 
                 request.getRequestDispatcher("user?action=profile").forward(request, response);
             }
-
         } catch (IOException | ServletException e) {
             System.out.println(e);
         }
@@ -503,6 +498,7 @@ public class UserController extends HttpServlet {
         return "Short description";
     }
 
+<<<<<<< HEAD
     private String generateUniqueFileName(String uploadDirPath, String fileName) {
         String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
         String extension = fileName.substring(fileName.lastIndexOf('.'));
@@ -524,4 +520,6 @@ public class UserController extends HttpServlet {
         return String.valueOf(otp);
     }
 
+=======
+>>>>>>> 80dba93543cc60b39893f5953298acc9ab59e655
 }
