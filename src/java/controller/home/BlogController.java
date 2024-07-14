@@ -47,7 +47,7 @@ public class BlogController extends HttpServlet {
         request.setAttribute("postsPerPage", POSTS_PER_PAGE);
         request.setAttribute("maxPagesDisplayed", MAX_PAGES_DISPLAYED);
 
-        request.getRequestDispatcher("Blogs.jsp").forward(request, response);
+        request.getRequestDispatcher("blog.jsp").forward(request, response);
     }
 
     @Override

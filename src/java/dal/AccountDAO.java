@@ -9,6 +9,7 @@ import model.Account;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.GoogleAccount;
@@ -29,7 +30,7 @@ public class AccountDAO extends DBContext {
     public Account getAccountByUP(String email, String password) {
         Account account = null;
         try {
-            String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.setting_id, u.status, u.note, u.verified "
+            String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.setting_id, u.status, u.note, u.verified, s.status AS setting_status "
                     + "FROM [user] u "
                     + "INNER JOIN setting s ON u.setting_id = s.setting_id "
                     + "WHERE email = ? AND password = ?";
@@ -39,7 +40,7 @@ public class AccountDAO extends DBContext {
             statement.setString(2, encodedPassword);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                Setting setting = new Setting(rs.getInt("setting_id"), "", "", "");
+                Setting setting = new Setting(rs.getInt("setting_id"), "", "", "", rs.getBoolean("setting_status"));
                 int userId = rs.getInt("user_id");
                 String avatarUrl = getAvatarUrlByUserId(userId);
                 account = new Account(userId, rs.getString("full_name"), rs.getString("user_name"),
@@ -54,7 +55,7 @@ public class AccountDAO extends DBContext {
 
     public Account getAccountsByEmail(String email) {
         Account account = null;
-        String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.setting_id, u.status, u.note, u.verified "
+        String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.setting_id, u.status, u.note, u.verified, s.status AS setting_status "
                 + "FROM [user] u "
                 + "INNER JOIN setting s ON u.setting_id = s.setting_id "
                 + "WHERE u.email = ?";
@@ -62,7 +63,7 @@ public class AccountDAO extends DBContext {
             statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Setting setting = new Setting(rs.getInt("setting_id"), "", "", "");
+                Setting setting = new Setting(rs.getInt("setting_id"), "", "", "", rs.getBoolean("setting_status"));
                 int userId = rs.getInt("user_id");
                 String avatarUrl = getAvatarUrlByUserId(userId);
                 account = new Account(userId, rs.getString("full_name"), rs.getString("user_name"),
@@ -77,7 +78,7 @@ public class AccountDAO extends DBContext {
 
     public Account getAccountsByUserName(String userName) {
         Account account = null;
-        String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.setting_id, u.status, u.note, u.verified "
+        String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.setting_id, u.status, u.note, u.verified, s.status AS setting_status "
                 + "FROM [user] u "
                 + "INNER JOIN setting s ON u.setting_id = s.setting_id "
                 + "WHERE u.[user_name] = ?";
@@ -85,7 +86,7 @@ public class AccountDAO extends DBContext {
             statement.setString(1, userName);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                Setting setting = new Setting(rs.getInt("setting_id"), "", "", "");
+                Setting setting = new Setting(rs.getInt("setting_id"), "", "", "", rs.getBoolean("setting_status"));
                 int userId = rs.getInt("user_id");
                 String avatarUrl = getAvatarUrlByUserId(userId);
                 account = new Account(userId, rs.getString("full_name"), rs.getString("user_name"),
@@ -100,7 +101,7 @@ public class AccountDAO extends DBContext {
 
     public Account getAccountById(int userId) {
         Account account = null;
-        String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.setting_id, u.status, u.note, u.verified "
+        String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.setting_id, u.status, u.note, u.verified, s.status AS setting_status "
                 + "FROM [user] u "
                 + "INNER JOIN setting s ON u.setting_id = s.setting_id "
                 + "WHERE u.[user_id] = ?";
@@ -108,7 +109,7 @@ public class AccountDAO extends DBContext {
             statement.setInt(1, userId);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                Setting setting = new Setting(rs.getInt("setting_id"), "", "", "");
+                Setting setting = new Setting(rs.getInt("setting_id"), "", "", "", rs.getBoolean("setting_status"));
                 String avatarUrl = getAvatarUrlByUserId(userId);
                 account = new Account(userId, rs.getString("full_name"), rs.getString("user_name"),
                         rs.getString("email"), rs.getString("phone_number"), rs.getString("password"),
@@ -189,13 +190,13 @@ public class AccountDAO extends DBContext {
     public ArrayList<Account> listAcc() {
         ArrayList<Account> acc = new ArrayList<>();
         try {
-            String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.avatar_url, u.setting_id, u.status, u.note, u.verified "
+            String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.avatar_url, u.setting_id, u.status, u.note, u.verified, s.status AS setting_status "
                     + "FROM [user] u "
                     + "INNER JOIN setting s ON u.setting_id = s.setting_id";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Setting setting = new Setting(rs.getInt("setting_id"), "", "", "");
+                Setting setting = new Setting(rs.getInt("setting_id"), "", "", "", rs.getBoolean("setting_status"));
                 Account a = new Account(rs.getInt("user_id"), rs.getString("full_name"),
                         rs.getString("user_name"), rs.getString("email"), rs.getString("phone_number"),
                         rs.getString("password"), rs.getString("avatar_url"), setting,
@@ -210,6 +211,11 @@ public class AccountDAO extends DBContext {
 
     public void insertAccount(String name, String user_name, String email, String password, int setting, int status, boolean verified) {
         try {
+            while (getAccountsByUserName(user_name) != null) {
+                Random rand = new Random();
+                int randomNum = rand.nextInt(900) + 100;
+                user_name = user_name + randomNum;
+            }
             String sql = "INSERT INTO [user] (full_name, user_name, email, password, setting_id, status, verified) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, name);
@@ -375,6 +381,49 @@ public class AccountDAO extends DBContext {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public List<Account> filterAccounts(Integer role, Integer status) {
+        List<Account> filteredAccounts = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM [user] u JOIN [setting] s ON u.setting_id = s.setting_id WHERE 1=1");
+
+        if (role != null) {
+            sql.append(" AND u.status = ?");
+        }
+        if (status != null) {
+            sql.append(" AND u.setting_id = ?");
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            if (role != null) {
+                statement.setInt(paramIndex++, role);
+            }
+            if (status != null) {
+                statement.setInt(paramIndex, status);
+            }
+
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    Account account = new Account();
+                    account.setUser_id(rs.getInt("user_id"));
+                    account.setFullname(rs.getString("fullname"));
+                    account.setUsername(rs.getString("username"));
+                    account.setEmail(rs.getString("email"));
+                    account.setPhone_number(rs.getString("phone_number"));
+                    account.setStatus(rs.getInt("status"));
+
+                    Setting setting = new Setting();
+                    setting.setSetting_id(rs.getInt("setting_id"));
+                    account.setSetting(setting);
+
+                    filteredAccounts.add(account);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return filteredAccounts;
     }
 
     public static void main(String[] args) {

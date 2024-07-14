@@ -1,5 +1,6 @@
 package controller.admin;
 
+import Email.JavaMail;
 import com.google.gson.Gson;
 import config.Encode;
 import config.Validate;
@@ -11,6 +12,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import model.Account;
+import java.util.Random;
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 /**
  *
@@ -61,7 +66,7 @@ public class AccountManager extends HttpServlet {
                 int role = Integer.parseInt(request.getParameter("status"));
                 boolean verified = false;
                 boolean hasErrors = false;
-
+                
                 // Validation checks
                 if (!Validate.checkFullName(fullname)) {
                     request.setAttribute("fullnameError", "Invalid full name. Please enter a valid name.");
@@ -80,9 +85,23 @@ public class AccountManager extends HttpServlet {
                     request.setAttribute("showAddUserModal", true);
                     request.getRequestDispatcher("admin/account.jsp").forward(request, response);
                 } else {
-                    String defaultPassword = Encode.enCode("12345678aZ");
+                    String randomPass = generateRandomPassword();
+                    String defaultPassword = Encode.enCode(randomPass);
                     accountDAO.insertAccount(fullname, username, email, defaultPassword, setting, role, verified);
-                    response.sendRedirect("account?action=all&success=1");
+
+                    String subject = "Your New Account Password";
+                    String content = "<h1>Password Account</h1>"
+                            + "<p>Your new account has been create. Your temporary password is: <strong>" + randomPass + "</strong></p>"
+                            + "<p>Please log in with the new password sent to your email, then change your password to secure your account</p>";
+                    boolean emailSent = JavaMail.sendEmail(email, subject, content);
+
+                    if (emailSent) {
+                        response.sendRedirect("account?action=all&success=1");
+                        return;
+                    } else {
+                        request.setAttribute("emailError", "Failed to send email. Please try again.");
+                        request.getRequestDispatcher("admin/account.jsp").forward(request, response);
+                    }
                 }
             }
             //search
@@ -215,5 +234,23 @@ public class AccountManager extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
+    }
+
+    private String generateRandomPassword() {
+        String upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String combinedChars = upperCaseLetters + lowerCaseLetters + numbers;
+        Random random = new Random();
+        char[] password = new char[8];
+
+        password[0] = upperCaseLetters.charAt(random.nextInt(upperCaseLetters.length()));
+        password[1] = lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length()));
+        password[2] = numbers.charAt(random.nextInt(numbers.length()));
+
+        for (int i = 3; i < 8; i++) {
+            password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
+        }
+        return new String(password);
     }
 }

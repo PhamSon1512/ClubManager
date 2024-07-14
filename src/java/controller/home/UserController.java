@@ -64,6 +64,7 @@ public class UserController extends HttpServlet {
 
                 if (user == null) {
                     if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+                        request.setAttribute("loginError", "Email or password is incorrect!");
                     } else {
                         request.setAttribute("loginError", "Email or password is incorrect!");
                         request.setAttribute("email", email);
@@ -270,7 +271,7 @@ public class UserController extends HttpServlet {
                 }
             }
             // recover
-            if (action.equals("recover")) {
+            if (action.equals("forgotpass")) {
                 request.getRequestDispatcher("checkMail.jsp").forward(request, response);
             }
             // check email
@@ -306,7 +307,36 @@ public class UserController extends HttpServlet {
 
             // recover pass
             if (action.equals("recoverpass")) {
-                // chưa biết đường dẫn web ntn
+                String email = request.getParameter("email");
+                request.setAttribute("email", email);
+
+                Account account = dal.getAccountsByEmail(email);
+                if (account != null) {
+                    // Generate new password
+                    String newPassword = generateRandomPassword();
+
+                    // Update password in database
+                    String encryptedPassword = Encode.enCode(newPassword);
+                    dal.updatePasswordByEmail(email, encryptedPassword);
+
+                    // Send email with new password
+                    String subject = "Password Reset";
+                    String content = "<h1>Reset password successful!</h1>"
+                            + "<p>Your new password is: <strong>" + newPassword + "</strong></p>"
+                            + "<p>Please log in with the new password sent to your email, then change your password to secure your account</p>";
+                    boolean emailSent = JavaMail.sendEmail(email, subject, content);
+
+                    if (emailSent) {
+                        response.sendRedirect("login.jsp?message=Password reset successful. Please check your email for the new password.");
+                        return;
+                    } else {
+                        request.setAttribute("emailError", "Failed to send email. Please try again.");
+                        request.getRequestDispatcher("checkMail.jsp").forward(request, response);
+                    }
+                } else {
+                    request.setAttribute("emailError", "Email not found. Please check your email or register.");
+                    request.getRequestDispatcher("checkMail.jsp").forward(request, response);
+                }
             }
             // profile
             if (action.equals("profile")) {
@@ -524,4 +554,21 @@ public class UserController extends HttpServlet {
         return String.valueOf(otp);
     }
 
+    private String generateRandomPassword() {
+        String upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String combinedChars = upperCaseLetters + lowerCaseLetters + numbers;
+        Random random = new Random();
+        char[] password = new char[8];
+
+        password[0] = upperCaseLetters.charAt(random.nextInt(upperCaseLetters.length()));
+        password[1] = lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length()));
+        password[2] = numbers.charAt(random.nextInt(numbers.length()));
+
+        for (int i = 3; i < 8; i++) {
+            password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
+        }
+        return new String(password);
+    }
 }
