@@ -56,6 +56,10 @@
         <servlet-name>UserRegisterClub</servlet-name>
         <servlet-class>controller.home.UserRegisterClub</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SettingController</servlet-name>
+        <servlet-class>controller.admin.SettingController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeController</servlet-name>
         <url-pattern>/home</url-pattern>
@@ -111,5 +115,9 @@
     <servlet-mapping>
         <servlet-name>UserRegisterClub</servlet-name>
         <url-pattern>/userRegisterClub</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SettingController</servlet-name>
+        <url-pattern>/setting</url-pattern>
     </servlet-mapping>
 </web-app>
