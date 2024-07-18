@@ -71,6 +71,8 @@
                             if (account != null) {
                         %>
                         <a class="dropdown-item text-" href="user?action=profile"><span class="mb-0 d-inline-block me-1"><i class="uil uil-user align-middle h6"></i></span> My Account</a>
+                        <a class="dropdown-item text-" href="MyRegistrationsServlet"><span class="mb-0 d-inline-block me-1"><i class="uil uil-user align-middle h6"></i></span> My Registration</a>
+
                         <a class="dropdown-item text-" onclick="redirectToChangePassword()" href="javascript:void(0)"><span class="mb-0 d-inline-block me-1"><i class="uil uil-lock-alt align-middle h6"></i></span> Change Password</a>
                         <a class="dropdown-item text-" href="user?action=logout"><span class="mb-0 d-inline-block me-1"><i class="uil uil-sign-out-alt align-middle h6"></i></span> Logout</a>
                                 <%
