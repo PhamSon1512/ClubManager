@@ -77,6 +77,7 @@ public class AcceptRegistrationServlet extends HttpServlet {
             dao.addMemberToClub(registration.getClubId(), registration.getEmail(), registration.getCommittees(), 1);
 
             if (isSent) {
+                 
                 request.setAttribute("successMessage", "Registration accepted, member added to club, and notification email sent.");
             } else {
                 request.setAttribute("errorMessage", "Registration accepted and member added to club, but failed to send notification email.");

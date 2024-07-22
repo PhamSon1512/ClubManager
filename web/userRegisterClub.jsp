@@ -7,12 +7,12 @@
 <html lang="en">
     <jsp:include page="layout/head.jsp" />
     <body>
-       
+
         <jsp:include page="layout/menu.jsp" />
 
         <section class="section">
             <div class="container">
-                <h2 class="mb-0">Register Club</h2>
+
                 <div class="row">
                     <%
                         Account account = (Account) session.getAttribute("account");
@@ -35,19 +35,28 @@
                                             <div class="mb-3">
                                                 <label class="form-label">Name<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" name="name" value="<%= account != null ? account.getFullname() : "" %>">
+                                                <c:if test="${not empty NameError}">
+                                                    <small class="text-danger">${NameError}</small>
+                                                </c:if>
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="mb-3">
                                                 <label class="form-label">Email<span class="text-danger">*</span></label>
                                                 <input type="email" class="form-control" name="email" value="<%= account != null ? account.getEmail() : "" %>">
+                                                <c:if test="${not empty emailError}">
+                            <small class="text-danger">${emailError}</small>
+                        </c:if>
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Purpose of participation<span class="text-danger">*</span></label>
-                                                <input type="text" name="purpose" class="form-control" id="purpose-input" placeholder="Enter your purpose" required>
+                                                <input type="text" name="purpose" class="form-control" id="purpose-input" placeholder="Enter your purpose" >
+                                                <c:if test="${not empty purposeError}">
+                            <small class="text-danger">${purposeError}</small>
+                        </c:if>
                                             </div>
                                         </div>
 
@@ -62,6 +71,9 @@
                                                     <option value="Ban Noi Dung">Ban Noi Dung</option>
                                                     <option value="Ban Media">Ban Media</option>
                                                 </select>
+                                                                   <c:if test="${not empty committeesError}">
+                            <small class="text-danger">${committeesError}</small>
+                        </c:if>
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
@@ -84,7 +96,7 @@
 
         <jsp:include page="layout/footer.jsp" />
         <a href="#" onclick="topFunction()" id="back-to-top" class="btn btn-icon btn-pills btn-primary back-to-top"><i data-feather="arrow-up" class="icons"></i></a>
-        
+
 
         <script src="assets/js/jquery.min.js"></script>
         <script src="assets/js/bootstrap.bundle.min.js"></script>
@@ -106,19 +118,19 @@
             });
             </script>
         </c:if>
-            <c:if test="${not empty errorMessage}">
-    <script>
-        $(document).ready(function () {
-            swal("Error", "${errorMessage}", "error");
-        });
-    </script>
-</c:if>
-            <c:if test="${not empty errorMessages}">
-    <script>
-        $(document).ready(function () {
-            swal("Error", "${errorMessages}", "error");
-        });
-    </script>
-</c:if>
+        <c:if test="${not empty errorMessage}">
+            <script>
+                $(document).ready(function () {
+                    swal("Error", "${errorMessage}", "error");
+                });
+            </script>
+        </c:if>
+        <c:if test="${not empty errorMessages}">
+            <script>
+                $(document).ready(function () {
+                    swal("Error", "${errorMessages}", "error");
+                });
+            </script>
+        </c:if>
     </body>
 </html>

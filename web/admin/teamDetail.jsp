@@ -16,7 +16,7 @@
                             <c:set var="deptInfo" value="${departmentInfoMap[entry.key]}" />
                             <div class="department-section mb-5">
                                 <h2 class="department-title mb-4">${specialityMap[entry.key]}</h2>
-                                
+
                                 <div id="department-info-${entry.key}" class="department-info card mb-4">
                                     <div class="card-header bg-primary text-white">
                                         <h3 class="mb-0">Department Information</h3>
@@ -29,13 +29,19 @@
                                                         <th>Description</th>
                                                         <th>Current Projects</th>
                                                         <th>Regular Meeting Schedule</th>
+                                                        <th>Edit</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td>${deptInfo.description}</td>
-                                                        <td>${deptInfo.currentProjects}</td>
-                                                        <td>${deptInfo.regularMeetingSchedule}</td>
+                                                        <td id="description-${entry.key}">${deptInfo.description}</td>
+                                                        <td id="projects-${entry.key}">${deptInfo.currentProjects}</td>
+                                                        <td id="schedule-${entry.key}">${deptInfo.regularMeetingSchedule}</td>
+                                                        <td>
+                                                            <button class="btn btn-primary btn-sm edit-dept" data-dept-id="${entry.key}" data-club-id="${clubId}">
+    Edit
+</button>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -69,13 +75,12 @@
                                                             <td>${member.fullName}</td>
                                                             <td>${member.email}</td>
                                                             <td>
-                                                              <button class="btn btn-sm ${member.active_status ? 'btn-success' : 'btn-danger'} toggle-active" 
-        data-member-id="${member.user_id}" 
-        data-active-status="${member.active_status}">
-    ${member.active_status ? 'Active' : 'Non-Active'}
-</button>
+                                                                <button class="btn btn-sm ${member.active_status ? 'btn-success' : 'btn-danger'} toggle-active" 
+                                                                        data-member-id="${member.user_id}" 
+                                                                        data-active-status="${member.active_status}">
+                                                                    ${member.active_status ? 'Active' : 'Non-Active'}
+                                                                </button>
                                                             </td>
-
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>
@@ -91,99 +96,133 @@
             </main>
         </div>
 
+        <!-- Modal for editing department information -->
+        <div class="modal fade" id="editDepartmentModal" tabindex="-1" role="dialog" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editDepartmentModalLabel">Edit Department Information</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editDepartmentForm">
+                            <input type="hidden" id="editDeptId" name="deptId">
+                            <div class="form-group">
+                                <label for="editDescription">Description</label>
+                                <textarea class="form-control" id="editDescription" name="description" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="editProjects">Current Projects</label>
+                                <input type="text" class="form-control" id="editProjects" name="currentProjects">
+                            </div>
+                            <div class="form-group">
+                                <label for="editSchedule">Regular Meeting Schedule</label>
+                                <input type="text" class="form-control" id="editSchedule" name="regularMeetingSchedule">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveDepartmentChanges">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <script src="assets/js/simplebar.min.js"></script>
         <script src="assets/js/feather.min.js"></script>
         <script src="assets/js/app.js"></script>
-
-        <style>
-            .department-section {
-                background-color: #f8f9fa;
-                border-radius: 10px;
-                padding: 20px;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            }
-            .department-title {
-                color: #343a40;
-                border-bottom: 2px solid #007bff;
-                padding-bottom: 10px;
-            }
-            .card {
-                border: none;
-                box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            }
-            .card-header {
-                font-weight: bold;
-            }
-            .table th {
-                font-weight: 600;
-            }
-            .avatar {
-                object-fit: cover;
-            }
-        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <script>
-            function showDepartmentInfo(specialityId) {
-                document.querySelectorAll('.department-info, .members').forEach(function (element) {
-                    element.classList.remove('active');
-                });
+           $(document).ready(function () {
+    $('.edit-dept').click(function () {
+        var specialityId = $(this).data('dept-id');
+        var clubId = $(this).data('club-id');
+        var description = $('#description-' + specialityId).text();
+        var projects = $('#projects-' + specialityId).text();
+        var schedule = $('#schedule-' + specialityId).text();
 
-                document.getElementById('department-info-' + specialityId).classList.add('active');
-                document.getElementById('members-' + specialityId).classList.add('active');
-            }
-        </script>
-    </body>
-    <script>
-          $(document).ready(function () {
-    $('.toggle-active').click(function () {
-        var button = $(this);
-        var memberId = button.data('member-id');
-        var currentStatus = button.data('active-status');
+        $('#editDeptId').val(specialityId);
+        $('#editClubId').val(clubId);
+        $('#editDescription').val(description);
+        $('#editProjects').val(projects);
+        $('#editSchedule').val(schedule);
+
+        $('#editDepartmentModal').modal('show');
+    });
+
+    $('#saveDepartmentChanges').click(function () {
+        var specialityId = $('#editDeptId').val();
+        var clubId = $('#editClubId').val();
+        var description = $('#editDescription').val();
+        var projects = $('#editProjects').val();
+        var schedule = $('#editSchedule').val();
 
         $.ajax({
-            url: 'toggleMemberStatus',
+            url: 'team?action=updateDepartment',
             type: 'POST',
             data: {
-                memberId: memberId,
-                activeStatus: !currentStatus
+                specialityId: specialityId,
+                clubId: clubId,
+                description: description,
+                currentProjects: projects,
+                regularMeetingSchedule: schedule
             },
             success: function (response) {
                 if (response === 'success') {
-                    // Update button appearance
-                    var newStatus = !currentStatus;
-                    button.toggleClass('btn-success btn-danger');
-                    button.data('active-status', newStatus);
-                    button.text(newStatus ? 'Active' : 'Non-Active');
+                    // Update the UI
+                    $('#description-' + specialityId).text(description);
+                    $('#projects-' + specialityId).text(projects);
+                    $('#schedule-' + specialityId).text(schedule);
 
-                    // Show status message
-                    $('#statusMessage').text('Member status updated successfully')
-                            .removeClass('alert-danger')
-                            .addClass('alert-success')
-                            .show()
-                            .delay(3000)
-                            .fadeOut();
+                    $('#editDepartmentModal').modal('hide');
+                    alert('Department information updated successfully');
                 } else {
-                    // Show error message
-                    $('#statusMessage').text('Failed to update member status')
-                            .removeClass('alert-success')
-                            .addClass('alert-danger')
-                            .show()
-                            .delay(3000)
-                            .fadeOut();
+                    alert('Failed to update department information: ' + response);
                 }
             },
-            error: function () {
-                // Show error message
-                $('#statusMessage').text('An error occurred while updating member status')
-                        .removeClass('alert-success')
-                        .addClass('alert-danger')
-                        .show()
-                        .delay(3000)
-                        .fadeOut();
+            error: function (xhr, status, error) {
+                alert('An error occurred while updating department information: ' + error);
             }
         });
     });
-});
+
+
+                // ... rest of your code ...
+         
+
+            $('.toggle-active').click(function () {
+            var button = $(this);
+                    var memberId = button.data('member-id');
+                    var currentStatus = button.data('active-status');
+                    $.ajax({
+                    url: 'toggleMemberStatus',
+                            type: 'POST',
+                            data: {
+                            memberId: memberId,
+                                    activeStatus: !currentStatus
+                            },
+                            success: function (response) {
+                            if (response === 'success') {
+                            var newStatus = !currentStatus;
+                                    button.toggleClass('btn-success btn-danger');
+                                    button.data('active-status', newStatus);
+                                    button.text(newStatus ? 'Active' : 'Non-Active');
+                            } else {
+                            alert('Failed to update member status');
+                            }
+                            },
+                            error: function () {
+                            alert('An error occurred while updating member status');
+                            }
+                    });
+            });
+            }
+            );
         </script>
+    </body>
 </html>

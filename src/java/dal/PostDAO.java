@@ -29,6 +29,14 @@ public class PostDAO extends DBContext {
         conn = dbc.getConnection();
     }
 
+    public List<Post> getListByPage(List<Post> list, int start, int end) {
+        ArrayList<Post> post = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            post.add(list.get(i));
+        }
+        return post;
+    }
+
     public List<Post> getAllPosts() {
         List<Post> posts = new ArrayList<>();
         String sql = "SELECT p.post_id, p.title, p.thumnail_Url, p.content, p.author_id, p.created_at, p.updated_at, u.user_name "
@@ -99,22 +107,21 @@ public class PostDAO extends DBContext {
         }
     }
 
-    public boolean updatePost(Post post) {
-        String sql = "UPDATE post SET title = ?, content = ?, author_id = ?, created_at = ?, updated_at = ? WHERE post_id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, post.getTitle());
-            stmt.setString(2, post.getContent());
-            stmt.setInt(3, post.getAuthorId());
-            stmt.setTimestamp(4, post.getCreatedAt());
-            stmt.setTimestamp(5, post.getUpdatedAt());
-            stmt.setInt(6, post.getPostId());
-            int affectedRows = stmt.executeUpdate();
-            return affectedRows > 0;
-        } catch (SQLException ex) {
-            Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error updating post", ex);
-            return false;
-        }
+   public boolean updatePost(Post post) {
+    String sql = "UPDATE post SET title = ?, content = ?, thumnail_url = ?, updated_at = ? WHERE post_id = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, post.getTitle());
+        stmt.setString(2, post.getContent());
+        stmt.setString(3, post.getThumnailUrl());
+        stmt.setTimestamp(4, post.getUpdatedAt());
+        stmt.setInt(5, post.getPostId());
+        int affectedRows = stmt.executeUpdate();
+        return affectedRows > 0;
+    } catch (SQLException ex) {
+        Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error updating post", ex);
+        return false;
     }
+}
 
     public boolean deletePost(int postId) {
         String sql = "DELETE FROM post WHERE post_id = ?";
@@ -152,10 +159,40 @@ public class PostDAO extends DBContext {
         }
         return posts;
     }
+    public List<Post> getPostsByClub(int clubId) {
+    List<Post> posts = new ArrayList<>();
+    String sql = "SELECT p.post_id, p.title, p.thumnail_Url, p.content, p.author_id, p.created_at, p.updated_at, u.user_name "
+            + "FROM post p "
+            + "JOIN [user] u ON p.author_id = u.user_id "
+            + "JOIN club_member cm ON u.user_id = cm.user_id "
+            + "WHERE cm.club_id = ? "
+            + "ORDER BY p.created_at DESC";
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, clubId);
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Post post = new Post();
+                post.setPostId(rs.getInt("post_id"));
+                post.setTitle(rs.getString("title"));
+                post.setThumnailUrl(rs.getString("thumnail_Url"));
+                post.setContent(rs.getString("content"));
+                post.setAuthorId(rs.getInt("author_id"));
+                post.setCreatedAt(rs.getTimestamp("created_at"));
+                post.setUpdatedAt(rs.getTimestamp("updated_at"));
+                post.setUserName(rs.getString("user_name"));
+                posts.add(post);
+            }
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(PostDAO.class.getName()).log(Level.SEVERE, "Error retrieving posts by club", ex);
+    }
+    return posts;
+}
 
     public static void main(String[] args) {
         PostDAO postDAO = new PostDAO();
-        postDAO.getAllPosts();
+        postDAO.getPostsByClub(1);
 
         // Create a new Post object
     }

@@ -12,27 +12,36 @@
                 <jsp:include page="../admin/layout/headmenu.jsp"/>
                 <div class="container-fluid">
                     <div class="layout-specing">
-                        <div class="row">
-                            <div class="col-md-10 row">
-                                <div class="col-md-4">
-                                    <h5 class="mb-0">Members</h5>
-                                    <div id="statusMessage" class="alert" role="alert" style="display: none;"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="search-bar p-0 d-lg-block ms-2">
-                                        <div id="search" class="menu-search mb-0">
-                                            <form action="memberdetail?action=search" method="POST" id="searchform" class="searchform">
-                                                <div>
-                                                    <input type="text" class="form-control border rounded-pill" name="query" id="s" placeholder="Search members..." value="${param.query}">
-                                                    <input type="submit" id="searchsubmit" value="Search">
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="row mb-4">
+                            <div class="col-md-10">
+                                <h5 class="mb-0">Members</h5>
+                                <div id="statusMessage" class="alert" role="alert" style="display: none;"></div>
                             </div>
                         </div>
-
+                        <!-- Filter and Search Section -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <form action="memberdetail" method="GET" id="filterForm">
+                                    <input type="hidden" name="query" value="${searchQuery}">
+                                    <select name="specialityFilter" class="form-select" onchange="this.form.submit()">
+                                        <option value="">All Departments</option>
+                                        <c:forEach var="entry" items="${specialityMap}">
+                                            <option value="${entry.key}" ${specialityFilter eq entry.key ? 'selected' : ''}>
+                                                ${entry.value}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </form>
+                            </div>
+                            <div class="col-md-8">
+                                <form action="memberdetail" method="GET" id="searchform" class="input-group">
+                                    <input type="text" class="form-control border rounded-pill" name="query" id="s" placeholder="Search members..." value="${searchQuery}">
+                                    <input type="hidden" name="specialityFilter" value="${specialityFilter}">
+                                    <button type="submit" class="btn btn-primary rounded-pill ms-2">Search</button>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Members Table -->
                         <div class="row">
                             <div class="col-12 mt-4">
                                 <div class="table-responsive bg-white shadow rounded">
@@ -97,56 +106,56 @@
         <script src="assets/js/feather.min.js"></script>
         <script src="assets/js/app.js"></script>
         <script>
-            $(document).ready(function () {
-                $('.toggle-active').click(function () {
-                    var button = $(this);
-                    var memberId = button.data('member-id');
-                    var currentStatus = button.data('active-status');
+                                        $(document).ready(function () {
+                                            $('.toggle-active').click(function () {
+                                                var button = $(this);
+                                                var memberId = button.data('member-id');
+                                                var currentStatus = button.data('active-status');
 
-                    $.ajax({
-                        url: 'toggleMemberStatus',
-                        type: 'POST',
-                        data: {
-                            memberId: memberId,
-                            activeStatus: !currentStatus
-                        },
-                        success: function (response) {
-                            if (response === 'success') {
-                                // Update button appearance
-                                button.toggleClass('btn-success btn-danger');
-                                var newStatus = !currentStatus;
-                                button.data('active-status', newStatus);
-                                button.text(newStatus ? 'Active' : 'Non-Active');
+                                                $.ajax({
+                                                    url: 'toggleMemberStatus',
+                                                    type: 'POST',
+                                                    data: {
+                                                        memberId: memberId,
+                                                        activeStatus: !currentStatus
+                                                    },
+                                                    success: function (response) {
+                                                        if (response === 'success') {
+                                                            // Update button appearance
+                                                            button.toggleClass('btn-success btn-danger');
+                                                            var newStatus = !currentStatus;
+                                                            button.data('active-status', newStatus);
+                                                            button.text(newStatus ? 'Active' : 'Non-Active');
 
-                                // Show status message
-                                $('#statusMessage').text('Member status updated successfully')
-                                        .removeClass('alert-danger')
-                                        .addClass('alert-success')
-                                        .show()
-                                        .delay(3000)
-                                        .fadeOut();
-                            } else {
-                                // Show error message
-                                $('#statusMessage').text('Failed to update member status')
-                                        .removeClass('alert-success')
-                                        .addClass('alert-danger')
-                                        .show()
-                                        .delay(3000)
-                                        .fadeOut();
-                            }
-                        },
-                        error: function () {
-                            // Show error message
-                            $('#statusMessage').text('An error occurred while updating member status')
-                                    .removeClass('alert-success')
-                                    .addClass('alert-danger')
-                                    .show()
-                                    .delay(3000)
-                                    .fadeOut();
-                        }
-                    });
-                });
-            });
+                                                            // Show status message
+                                                            $('#statusMessage').text('Member status updated successfully')
+                                                                    .removeClass('alert-danger')
+                                                                    .addClass('alert-success')
+                                                                    .show()
+                                                                    .delay(3000)
+                                                                    .fadeOut();
+                                                        } else {
+                                                            // Show error message
+                                                            $('#statusMessage').text('Failed to update member status')
+                                                                    .removeClass('alert-success')
+                                                                    .addClass('alert-danger')
+                                                                    .show()
+                                                                    .delay(3000)
+                                                                    .fadeOut();
+                                                        }
+                                                    },
+                                                    error: function () {
+                                                        // Show error message
+                                                        $('#statusMessage').text('An error occurred while updating member status')
+                                                                .removeClass('alert-success')
+                                                                .addClass('alert-danger')
+                                                                .show()
+                                                                .delay(3000)
+                                                                .fadeOut();
+                                                    }
+                                                });
+                                            });
+                                        });
         </script>
     </body>
 </html>

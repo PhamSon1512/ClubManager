@@ -20,24 +20,25 @@ public class TeamDetail extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
+        String action = request.getParameter("action");
+        if (action != null && action.equals("updateDepartment")) {
+            updateDepartment(request, response);
+            return;
+        }
         
         HttpSession session = request.getSession();
         Integer clubId = (Integer) session.getAttribute("loggedInClubId");
         if (clubId == null) {
-            // Handle the case when clubId is not found in the session
-            response.sendRedirect("login.jsp"); // Redirect to login or show an error
+            response.sendRedirect("login.jsp");
             return;
         }
+        
         request.setAttribute("clubId", clubId);
         ClubDBContext dbContext = new ClubDBContext();
-
-        // Fetch club members
+        
         List<ClubMember> clubMembers = dbContext.getClubMembersByClubId(clubId);
-
-        // Fetch departments
         List<Department> departments = dbContext.getDepartmentsByClubId(clubId);
-
-        // Create a map for speciality_id to position names
+        
         Map<Integer, String> specialityMap = new HashMap<>();
         specialityMap.put(1, "Ban Chủ Nhiệm");
         specialityMap.put(2, "Ban Chuyên Môn");
@@ -45,8 +46,7 @@ public class TeamDetail extends HttpServlet {
         specialityMap.put(4, "Ban Truyền Thông");
         specialityMap.put(5, "Ban Hậu Cần");
         specialityMap.put(6, "Ban Nội Dung");
-
-        // Group members by speciality_id
+        
         Map<Integer, List<ClubMember>> departmentMembersMap = new HashMap<>();
         for (ClubMember member : clubMembers) {
             int specialityId = member.getSpeciality_id();
@@ -55,21 +55,40 @@ public class TeamDetail extends HttpServlet {
             }
             departmentMembersMap.get(specialityId).add(member);
         }
-
-        // Create a map for department information
+        
         Map<Integer, Department> departmentInfoMap = new HashMap<>();
         for (Department dept : departments) {
             departmentInfoMap.put(dept.getSpecialityId(), dept);
         }
-
-        // Set attributes to request
+        
         request.setAttribute("departmentMembersMap", departmentMembersMap);
         request.setAttribute("specialityMap", specialityMap);
         request.setAttribute("departmentInfoMap", departmentInfoMap);
-
-        // Forward request to teamDetail.jsp
+        
         request.getRequestDispatcher("admin/teamDetail.jsp").forward(request, response);
     }
+
+   private void updateDepartment(HttpServletRequest request, HttpServletResponse response) 
+        throws ServletException, IOException {
+    int specialityId = Integer.parseInt(request.getParameter("specialityId"));
+    String description = request.getParameter("description");
+    String currentProjects = request.getParameter("currentProjects");
+    String regularMeetingSchedule = request.getParameter("regularMeetingSchedule");
+
+    ClubDBContext dbContext = new ClubDBContext();
+    
+    // Lấy departmentId từ specialityId
+    int departmentId = dbContext.getDepartmentIdBySpecialityId(specialityId);
+    
+    if (departmentId != -1) {
+        boolean success = dbContext.updateDepartmentInfo(departmentId, description, currentProjects, regularMeetingSchedule);
+        response.setContentType("text/plain");
+        response.getWriter().write(success ? "success" : "failure");
+    } else {
+        response.setContentType("text/plain");
+        response.getWriter().write("Department not found");
+    }
+}
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
