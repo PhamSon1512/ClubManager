@@ -1,6 +1,6 @@
 package controller.admin;
 
-import dal.AccountDAO;
+import dal.ClubDBContext;
 import dal.CommentDAO;
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,8 @@ import jakarta.servlet.http.Part;
 import jakarta.servlet.http.HttpSession;
 import model.Post;
 import dal.PostDAO;
-import model.Account;
+import model.Club;
+
 import model.Comment;
 
 @WebServlet("/admin/post")
@@ -66,16 +67,44 @@ public class PostController extends HttpServlet {
             case "createComment":
                 createComment(request, response);
                 break;
+            case "editComment":
+                editComment(request, response);
+                break;
+            case "deleteComment":
+                deleteComment(request, response);
+                break;
+            case "filterByClub":
+                filterPostsByClub(request, response);
+                break;
             default:
                 listPosts(request, response);
         }
-
     }
 
     private void listPosts(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Post> posts = postDAO.getAllPosts();
         request.setAttribute("posts", posts);
+        int page = 1;
+        int numPerPage = 4; // Number of posts per page
+        int size = posts.size(); // Total number of posts
+        int num = (size % numPerPage == 0) ? (size / numPerPage) : ((size / numPerPage) + 1); // Total pages
+
+        String xPage = request.getParameter("page");
+        if (xPage != null) {
+            page = Integer.parseInt(xPage); // Get requested page number
+        }
+
+        int start = (page - 1) * numPerPage; // Calculate start index
+        int end = Math.min(page * numPerPage, size); // Calculate end index
+        List<Post> pagedPosts = postDAO.getListByPage(posts, start, end); // Get the subset of posts for the current page
+        ClubDBContext clubDAO = new ClubDBContext();
+        List<Club> clubs = clubDAO.getAllClubs();
+        request.setAttribute("clubs", clubs);
+        // Set attributes for JSP
+        request.setAttribute("page", page);
+        request.setAttribute("num", num);
+        request.setAttribute("posts", pagedPosts);
         request.getRequestDispatcher("admin/post.jsp").forward(request, response);
     }
 
@@ -87,7 +116,25 @@ public class PostController extends HttpServlet {
 
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userId");
-   
+
+        boolean hasError = false;
+
+        if (title == null || title.trim().isEmpty()) {
+            hasError = true;
+            request.setAttribute("titleError", "Title is required.");
+        }
+        if (content == null || content.trim().isEmpty()) {
+            hasError = true;
+            request.setAttribute("contentError", "Content is required.");
+        }
+
+        if (hasError) {
+            // Forward the request back to the post form with error messages
+            request.getRequestDispatcher("admin/post.jsp").forward(request, response);
+            return;
+        }
+
+        // Handle file upload and post creation if there are no errors
         if (filePart != null && filePart.getSize() > 0) {
             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
             String contentType = filePart.getContentType();
@@ -169,9 +216,16 @@ public class PostController extends HttpServlet {
         String content = request.getParameter("content");
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userId");
+        String commentIdStr = request.getParameter("commentId");
 
         CommentDAO commentDAO = new CommentDAO();
-        commentDAO.insertComment(postId, userId, content);
+
+        if (commentIdStr != null && !commentIdStr.isEmpty()) {
+            int commentId = Integer.parseInt(commentIdStr);
+            commentDAO.updateComment(commentId, content);
+        } else {
+            commentDAO.insertComment(postId, userId, content);
+        }
 
         response.sendRedirect("post?action=view&id=" + postId);
     }
@@ -197,19 +251,25 @@ public class PostController extends HttpServlet {
         int postId = Integer.parseInt(request.getParameter("id"));
         String title = request.getParameter("title");
         String content = request.getParameter("content");
-        int status = Integer.parseInt(request.getParameter("status"));
-        int authorId = Integer.parseInt(request.getParameter("author_id"));
+        Part filePart = request.getPart("image");
 
-        Post post = new Post();
-        post.setPostId(postId);
+        Post post = postDAO.getPostById(postId);
         post.setTitle(title);
         post.setContent(content);
-        post.setStatus(status);
-        post.setAuthorId(authorId);
         post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
+        if (filePart != null && filePart.getSize() > 0) {
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            String uploadDirPath = getServletContext().getRealPath("/assets/uploads");
+            String uniqueFileName = generateUniqueFileName(uploadDirPath, fileName);
+            String filePath = uploadDirPath + File.separator + uniqueFileName;
+
+            Files.copy(filePart.getInputStream(), Paths.get(filePath));
+            post.setThumnailUrl("assets/uploads/" + uniqueFileName);
+        }
+
         postDAO.updatePost(post);
-        response.sendRedirect("post?action=list");
+        response.sendRedirect("post?action=view&id=" + postId);
     }
 
     private void deletePost(HttpServletRequest request, HttpServletResponse response)
@@ -217,6 +277,30 @@ public class PostController extends HttpServlet {
         int postId = Integer.parseInt(request.getParameter("id"));
         postDAO.deletePost(postId);
         response.sendRedirect("post?action=list");
+    }
+
+    private void editComment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int commentId = Integer.parseInt(request.getParameter("commentId"));
+        String content = request.getParameter("content");
+        CommentDAO commentDAO = new CommentDAO();
+        commentDAO.updateComment(commentId, content);
+        response.sendRedirect("post?action=view&id=" + request.getParameter("postId"));
+    }
+
+    private void deleteComment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int commentId = Integer.parseInt(request.getParameter("commentId"));
+
+        CommentDAO commentDAO = new CommentDAO();
+        commentDAO.deleteComment(commentId);
+        response.sendRedirect("post?action=view&id=" + request.getParameter("postId"));
+    }
+
+    private void filterPostsByClub(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int clubId = Integer.parseInt(request.getParameter("clubId"));
+        List<Post> posts = postDAO.getPostsByClub(clubId);
+        request.setAttribute("posts", posts);
+        request.getRequestDispatcher("admin/post.jsp").forward(request, response);
     }
 
     @Override
@@ -233,6 +317,6 @@ public class PostController extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Post Controller Servlet";
+        return "Post Controller";
     }
 }

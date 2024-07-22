@@ -26,6 +26,20 @@ public class AccountDAO extends DBContext {
         connection = dbc.getConnection();
     }
 
+    public int getManagerClubId(int userId) {
+        String sql = "SELECT club_id FROM club_member WHERE user_id = ? AND status = 2";  // Assuming status 2 is for managers
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, userId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("club_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;  // Return -1 if no club is found for the manager
+    }
+
     public Account getAccountByUP(String email, String password) {
         Account account = null;
         try {
@@ -65,7 +79,7 @@ public class AccountDAO extends DBContext {
                 Setting setting = new Setting(rs.getInt("setting_id"), "", "", "");
                 int userId = rs.getInt("user_id");
                 String avatarUrl = getAvatarUrlByUserId(userId);
-account = new Account(userId, rs.getString("full_name"), rs.getString("user_name"),
+                account = new Account(userId, rs.getString("full_name"), rs.getString("user_name"),
                         rs.getString("email"), rs.getString("phone_number"), rs.getString("password"),
                         avatarUrl, setting, rs.getInt("status"), rs.getString("note"), rs.getBoolean("verified"));
             }
@@ -117,7 +131,7 @@ account = new Account(userId, rs.getString("full_name"), rs.getString("user_name
         } catch (SQLException ex) {
             Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-return account;
+        return account;
     }
 
     public List<Account> getListByPage(List<Account> list, int start, int end) {
@@ -191,7 +205,7 @@ return account;
         try {
             String sql = "SELECT u.[user_id], u.full_name, u.[user_name], u.email, u.phone_number, u.[password], u.avatar_url, u.setting_id, u.status, u.note, u.verified "
                     + "FROM [user] u "
-+ "INNER JOIN setting s ON u.setting_id = s.setting_id";
+                    + "INNER JOIN setting s ON u.setting_id = s.setting_id";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -252,7 +266,7 @@ return account;
     }
 
     public void updatePasswordByEmail(String email, String newPassword) {
-try {
+        try {
             String sql = "UPDATE [user] SET password = ? WHERE email = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, newPassword);
@@ -321,7 +335,7 @@ try {
         String sql = "UPDATE [user] SET full_name = ?, [user_name] = ?, phone_number = ?, [status] = ? WHERE [user_id] = ?";
 
         try (Connection conn = getConnection(); // Giả sử bạn có phương thức getConnection()
-PreparedStatement statement = conn.prepareStatement(sql)) {
+                 PreparedStatement statement = conn.prepareStatement(sql)) {
 
             statement.setString(1, fullname);
             statement.setString(2, username);
@@ -392,7 +406,7 @@ PreparedStatement statement = conn.prepareStatement(sql)) {
         printUserInfo(accountDAO, userId);
 
         // Thực hiện cập nhật
-boolean updateSuccess = accountDAO.updateAccount(userId, fullname, username, phoneNumber, role);
+        boolean updateSuccess = accountDAO.updateAccount(userId, fullname, username, phoneNumber, role);
 
         if (updateSuccess) {
             System.out.println("Update successful!");

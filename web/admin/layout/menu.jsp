@@ -13,13 +13,13 @@
                 <li><a href="servicemanage?action=all"><i class="uil uil-social-distancing me-2 d-inline-block"></i>Clubs Member</a></li>
                 <li><a href="regisclub?action=all"><i class="uil uil-envelope me-2 d-inline-block"></i>Club Register</a></li>
                 <li><a href="reservationmanage?action=all"><i class="uil uil-calendar-alt me-2 d-inline-block"></i>Event</a></li>
-                <li><a href="contact.jsp"><i class="uil uil-calendar-alt me-2 d-inline-block"></i>Admin Contact</a></li>
+                <li><a href="contactList"><i class="uil uil-calendar-alt me-2 d-inline-block"></i>Admin Contact</a></li>
                 <li><a href="admin/post"><i class="uil uil-calendar-alt me-2 d-inline-block"></i>Post</a></li>
             </c:if>
 
             <c:if test="${sessionScope.account.status == 2}">
-                <li><a href="dashboard?action=home"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
-                <li><a href="setting?action=all"><i class="uil uil-cog me-2 d-inline-block"></i>Setting</a></li>
+                <li><a href="home"><i class="uil uil-dashboard me-2 d-inline-block"></i>Home</a></li>
+                
                 <li><a href="doctormanage?action=all"><i class="uil uil-apps me-2 d-inline-block"></i>Blogs</a></li>
                 <li class="sidebar-dropdown">
                     <a href="#">
@@ -38,6 +38,7 @@
                 <li><a href="reservationmanage?action=all"><i class="uil uil-calendar-alt me-2 d-inline-block"></i>Event</a></li>
                 <li><a href="reservationmanage?action=all"><i class="uil uil-calendar-alt me-2 d-inline-block"></i>Task</a></li>
                 <li><a href="post"><i class="uil uil-calendar-alt me-2 d-inline-block"></i>Post</a></li>
+                
             </c:if>
 
             <c:if test="${sessionScope.user.role.role_id == 0}">
