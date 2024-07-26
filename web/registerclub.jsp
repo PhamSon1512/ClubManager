@@ -1,3 +1,9 @@
+<%-- 
+    Document   : registerclub
+    Created on : Jul 16, 2024, 9:44:45 AM
+    Author     : sodok
+--%>
+
 <%@page import="model.Account, dal.AccountDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -8,7 +14,6 @@
 
     <jsp:include page="layout/head.jsp"/>
     <body>
-        <jsp:include page="layout/preloader.jsp"/>
         <jsp:include page="layout/menu.jsp"/>
 
         <section class="bg-half-260 d-table w-100" style="background: url('assets/images/bg/logo.jpg') center;">
@@ -28,7 +33,17 @@
 
         <section class="section">
             <div class="container">
-                <h2 class="mb-0">Register Club</h2>
+                <h2 class="mb-0">Club Registration</h2>
+                <c:if test="${not empty successMessage}">
+                    <div class="alert alert-success" role="alert">
+                        ${successMessage}
+                    </div>
+                </c:if>
+                <c:if test="${not empty errorMessage}">
+                    <div class="alert alert-danger" role="alert">
+                        ${errorMessage}
+                    </div>
+                </c:if><br>
                 <div class="row">
                     <div class="col-lg-7">
                         <div class="card border-0 shadow rounded overflow-hidden">
@@ -40,82 +55,64 @@
                                     }
                                 %>
                                 <% if (account != null) { %>
-                                <form action="registerclub" method="POST">
+                                <form action="clubregister" method="POST" enctype="multipart/form-data">
                                     <div class="row">
                                         <div class="p-6">
-                                            <h4 class="mb-0">Profile</h4>
+                                            <h4 class="mb-0">Club Information</h4>
                                         </div>
                                         <br><br>
                                         <div class="col-lg-12">
                                             <div class="mb-3">
-                                                <label class="form-label">Name<span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control">
+                                                <label class="form-label"> Club Name<span class="text-danger">*</span></label>
+                                                <input name="clubName" type="text" class="form-control">
+                                                <div id="clubnameError" class="text-danger">
+                                                    <%= request.getAttribute("clubnameError") != null ? request.getAttribute("clubnameError") : "" %>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="mb-3">
                                                 <label class="form-label">Email<span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" class="form-control" value="<%= account.getEmail() %>" readonly>
                                             </div>
                                         </div>
-                                        <br>
-                                        <% } %>
                                         <div class="col-md-12">
                                             <div class="mb-3">
-                                                <label class="form-label">Club Categories</label>
-                                                <select class="form-control" id="category-select">
+                                                <label class="form-label">Club Categories<span class="text-danger">*</span></label>
+                                                <select class="form-control" id="category-select" name="category">
                                                     <c:forEach items="${listCategories}" var="C">
                                                         <option value="${C.category_id}">${C.name}</option>
                                                     </c:forEach>
                                                 </select>
                                             </div>
                                         </div>
-                                        <c:forEach items="${listClubs}" var="P">
-                                            <div class="col-md-4 mb-5">
-                                                <div class="card h-100 shadow-sm">
-
-                                                    <div class="card-body text-center">
-                                                        <h5 class="fw-bolder">${P.name}</h5>
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </c:forEach>
-                                        <div class="col-md-6">
+                                        <div class="col-lg-12">
                                             <div class="mb-3">
-                                                <label class="form-label">Purpose of participation<span class="text-danger">*</span></label>
-                                                <select required="" name="purpose" class="form-control department-name select2input custom-select" id="purpose-select" onchange="toggleCustomPurposeInput()">
-                                                    <option value="Learn">Learn</option>
-                                                    <option value="Make friends">Make friends</option>
-                                                    <option value="Skills development">Skills development</option>
-                                                    <option value="Entertainment">Entertainment</option>
-                                                    <option value="Other">Other (please specify)</option>
-                                                </select>
-                                                <input type="text" name="custom_purpose" class="form-control mt-2 custom-input" id="custom-purpose" placeholder="Enter your purpose" style="display: none;">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label class="form-label">Committees<span class="text-danger">*</span></label>
-                                                <select required="" name="commit" class="form-control department-name select2input custom-select" id="commit-select">
-                                                    <option value="chuyen mon">Ban Chuyen Mon</option>
-                                                    <option value="vanhoa">Ban Van Hoa</option>
-                                                    <option value="truyenthong">Ban Truyen Thong</option>
-                                                    <option value="haucan">Ban Hau Can</option>
-                                                    <option value="noidung">Ban Noi Dung</option>
-                                                    <option value="media">Ban Media</option>
-                                                </select>
+                                                <label class="form-label">Club Description<span class="text-danger">*</span></label>
+                                                <textarea required="" name="description" id="comments2" rows="4" class="form-control"></textarea>
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="mb-3">
-                                                <label class="form-label">Introduce Yourself<span class="text-danger">*</span></label>
-                                                <textarea required="" name="description" id="comments2" rows="4" class="form-control"></textarea>
+                                                <label class="form-label">Club Images<span class="text-danger">*</span></label>
+                                                <div id="myfileupload">
+                                                    <input type="file" name="clubImage" id="uploadfile" onchange="readURL(this);" style="display: none;" />
+                                                </div>
+                                                <div id="thumbbox">
+                                                    <img class="rounded" height="40%" width="60%" alt="Thumb image" id="thumbimage" style="display: none" />
+                                                    <a class="removeimg" href="javascript:"></a>
+                                                </div>
+                                                <div id="boxchoice">
+                                                    <a href="javascript:" class="Choicefile btn btn-primary"><i class="fas fa-cloud-upload-alt"></i> Choose image</a>
+                                                    <span id="filename" class="ml-2">No image have been uploaded</span>
+                                                    <p style="clear:both"></p>
+                                                </div> 
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Register</button>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
                                 </form>
+                                <% } %>
                             </div>
                         </div>
                     </div>
@@ -124,8 +121,6 @@
         </section>
         <jsp:include page="layout/footer.jsp"/>
         <a href="#" onclick="topFunction()" id="back-to-top" class="btn btn-icon btn-pills btn-primary back-to-top"><i data-feather="arrow-up" class="icons"></i></a>
-            <jsp:include page="layout/search.jsp"/>
-            <jsp:include page="layout/facebookchat.jsp"/>
 
         <script src="assets/js/jquery.min.js"></script>
         <script src="assets/js/bootstrap.bundle.min.js"></script>
@@ -140,12 +135,66 @@
         <script src="assets/js/app.js"></script>
         <script src="assets/js/sweetalert.min.js"></script>
 
-        <c:if test="${not empty successMessage}">
-            <script>
+        <style>
+            .Choicefile {
+                display: inline-block;
+                background: #396CF0;
+                padding: 5px 10px;
+                color: #fff;
+                text-align: center;
+                text-decoration: none;
+                cursor: pointer;
+                border-radius: 5px;
+                font-size: 14px;
+                border: none;
+                outline: none;
+            }
+
+            .Choicefile:hover {
+                background: #2d5ac7;
+            }
+
+            #uploadfile {
+                display: none;
+            }
+            #filename {
+                margin-left: 5px;
+                font-size: 14px;
+            }
+        </style>
+
+        <script>
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#thumbimage").attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                    $(".Choicefile").text("Change");
+                    $(".removeimg").show();
+                    $("#filename").text(input.files[0].name);
+                }
+            }
+
             $(document).ready(function () {
-                swal("Success", "${successMessage}", "success");
+                $(".Choicefile").click(function () {
+                    $("#uploadfile").click();
+                });
+
+                $(".removeimg").click(function () {
+                    $("#thumbimage").attr('src', '').hide();
+                    $("#uploadfile").val('');
+                    $(".Choicefile").html('<i class="fas fa-cloud-upload-alt"></i> Choose image');
+                    $("#filename").text("No image uploaded");
+                    $(this).hide();
+                });
+
+                $("#uploadfile").change(function () {
+                    readURL(this);
+                });
             });
-            </script>
-        </c:if>
+        </script>
+
     </body>
 </html>

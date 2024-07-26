@@ -7,13 +7,9 @@
     <jsp:include page="../admin/layout/adminhead.jsp"/>
     <body>
         <div class="page-wrapper doctris-theme toggled">
-            <c:if test="${!isTokenAccess}">
-                <jsp:include page="../admin/layout/menu.jsp"/>
-            </c:if>
+            <jsp:include page="../admin/layout/menu.jsp"/>
             <main class="page-content bg-light">
-                <c:if test="${!isTokenAccess}">
-                    <jsp:include page="../admin/layout/headmenu.jsp"/>
-                </c:if>
+                <jsp:include page="../admin/layout/headmenu.jsp"/>
                 <div class="container-fluid">
                     <div class="layout-specing">
                         <div class="row">
@@ -22,7 +18,18 @@
                                     <h5 class="mb-0">Registrations</h5>
                                     <div id="statusMessage" class="alert" role="alert" style="display: none;"></div>
                                 </div>
-                         
+                                <div class="col-md-6">
+                                    <div class="search-bar p-0 d-lg-block ms-2">                                                        
+                                        <div id="search" class="menu-search mb-0">
+                                            <form action="searchRegistrations" method="GET" id="searchform" class="searchform">
+                                                <div>
+                                                    <input type="text" class="form-control border rounded-pill" name="query" id="s" placeholder="Search registrations..." value="${param.query}">
+                                                    <input type="submit" id="searchsubmit" value="Search">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div> 
+                                </div>
                             </div>
                         </div>
 
@@ -40,9 +47,7 @@
                                                 <th class="border-bottom p-3">Description</th>
                                                 <th class="border-bottom p-3">Status</th>
                                                 <th class="border-bottom p-3">Submitted On</th>
-                                                <c:if test="${!isTokenAccess}">
-                                                    <th class="border-bottom p-3">Actions</th>
-                                                </c:if>
+                                                <th class="border-bottom p-3">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -58,26 +63,24 @@
                                                             <td class="p-3">${registration.description}</td>
                                                             <td class="p-3">${registration.status}</td>
                                                             <td class="p-3">${registration.createdAt}</td>
-                                                            <c:if test="${!isTokenAccess}">
-                                                                <td class="p-3">
-                                                                    <div class="button-container">
-                                                                        <form method="post" action="accept">
-                                                                            <input type="hidden" name="registrationId" value="${registration.id}" />
-                                                                            <button type="submit" class="accept btn btn-success btn-sm">Accept</button>
-                                                                        </form>
-                                                                        <form method="post" action="reject">
-                                                                            <input type="hidden" name="registrationId" value="${registration.id}" />
-                                                                            <button type="submit" class="reject btn btn-danger btn-sm">Reject</button>
-                                                                        </form>
-                                                                    </div>
-                                                                </td>
-                                                            </c:if>
+                                                            <td class="p-3">
+                                                                <div class="button-container">
+                                                                    <form method="post" action="accept">
+                                                                        <input type="hidden" name="registrationId" value="${registration.id}" />
+                                                                        <button type="submit" class="accept btn btn-success btn-sm">Accept</button>
+                                                                    </form>
+                                                                    <form method="post" action="reject">
+                                                                        <input type="hidden" name="registrationId" value="${registration.id}" />
+                                                                        <button type="submit" class="reject btn btn-danger btn-sm">Reject</button>
+                                                                    </form>
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                     </c:forEach>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <tr>
-                                                        <td colspan="${isTokenAccess ? 8 : 9}" class="text-center">No registrations to display.</td>
+                                                        <td colspan="9" class="text-center">No registrations to display.</td>
                                                     </tr>
                                                 </c:otherwise>
                                             </c:choose>
@@ -92,7 +95,7 @@
                                 <ul class="pagination justify-content-center mt-4">
                                     <c:forEach begin="1" end="${num}" var="i">
                                         <li class="page-item ${page == i ? 'active' : ''}">
-                                            <a class="page-link" href="?page=${i}&token=${param.token}">${i}</a>
+                                            <a class="page-link" href="?page=${i}">${i}</a>
                                         </li>
                                     </c:forEach>
                                 </ul>
@@ -100,16 +103,14 @@
                         </c:if>
 
                         <c:if test="${not empty successMessage}">
-                            <div class="alert alert-success mt-4">${successMessage}</div>
+                            <div class="message success mt-4">${successMessage}</div>
                         </c:if>
                         <c:if test="${not empty errorMessage}">
-                            <div class="alert alert-danger mt-4">${errorMessage}</div>
+                            <div class="message error mt-4">${errorMessage}</div>
                         </c:if>
                     </div>
                 </div>
-                <c:if test="${!isTokenAccess}">
-                    <jsp:include page="../admin/layout/footer.jsp"/>
-                </c:if>
+                <jsp:include page="../admin/layout/footer.jsp"/>
             </main>
         </div>
 
@@ -118,5 +119,4 @@
         <script src="assets/js/feather.min.js"></script>
         <script src="assets/js/app.js"></script>
     </body>
-   
 </html>

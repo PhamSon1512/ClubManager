@@ -5,12 +5,15 @@
 
 package controller.admin;
 
+import dal.SettingDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import model.Setting;
 
 /**
  *
@@ -19,16 +22,25 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SettingController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         
+        SettingDAO settingDAO = new SettingDAO();
+        
         String action = request.getParameter("action");
-        if(action.equals("all")){
-            request.getRequestDispatcher("admin/setting.jsp").forward(request, response);
+        if (action == null || action.equals("all")) {
+            List<Setting> settings = settingDAO.getAllSettingTypes();
+            request.setAttribute("settings", settings);
+            request.getRequestDispatcher("/admin/setting.jsp").forward(request, response);
+        } else {
+            List<Setting> settingDetails = settingDAO.getSettingsByType(action);
+            request.setAttribute("settingDetails", settingDetails);
+            request.setAttribute("selectedType", action);
+            request.getRequestDispatcher("/admin/setting.jsp").forward(request, response);
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
