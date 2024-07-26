@@ -1,15 +1,19 @@
 package controller.admin;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
+
 import com.google.gson.Gson;
+
+import Email.JavaMail;
 import config.Encode;
 import config.Validate;
 import dal.AccountDAO;
-import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 import model.Account;
 
 /**
@@ -59,15 +63,16 @@ public class AccountManager extends HttpServlet {
                 String email = request.getParameter("email");
                 int setting = Integer.parseInt(request.getParameter("setting"));
                 int role = Integer.parseInt(request.getParameter("status"));
-                boolean hasErrors = false;
                 boolean verified = false;
+                boolean hasErrors = false;
+                
                 // Validation checks
                 if (!Validate.checkFullName(fullname)) {
                     request.setAttribute("fullnameError", "Invalid full name. Please enter a valid name.");
                     hasErrors = true;
                 }
                 if (!Validate.checkEmail(email)) {
-request.setAttribute("emailError", "Invalid email format. Please enter a valid email.");
+                    request.setAttribute("emailError", "Invalid email format. Please enter a valid email.");
                     hasErrors = true;
                 }
                 if (accountDAO.getAccountsByEmail(email) != null) {
@@ -79,9 +84,23 @@ request.setAttribute("emailError", "Invalid email format. Please enter a valid e
                     request.setAttribute("showAddUserModal", true);
                     request.getRequestDispatcher("admin/account.jsp").forward(request, response);
                 } else {
-                    String defaultPassword = Encode.enCode("12345678aZ");
+                    String randomPass = generateRandomPassword();
+                    String defaultPassword = Encode.enCode(randomPass);
                     accountDAO.insertAccount(fullname, username, email, defaultPassword, setting, role, verified);
-                    response.sendRedirect("account?action=all&success=1");
+
+                    String subject = "Your New Account Password";
+                    String content = "<h1>Password Account</h1>"
+                            + "<p>Your new account has been create. Your temporary password is: <strong>" + randomPass + "</strong></p>"
+                            + "<p>Please log in with the new password sent to your email, then change your password to secure your account</p>";
+                    boolean emailSent = JavaMail.sendEmail(email, subject, content);
+
+                    if (emailSent) {
+                        response.sendRedirect("account?action=all&success=1");
+                        return;
+                    } else {
+                        request.setAttribute("emailError", "Failed to send email. Please try again.");
+                        request.getRequestDispatcher("admin/account.jsp").forward(request, response);
+                    }
                 }
             }
             //search
@@ -124,19 +143,19 @@ request.setAttribute("emailError", "Invalid email format. Please enter a valid e
                     response.getWriter().write("failed");
                 }
                 return;
-            } 
+            }
             // Get user information
             if (action.equals("getUserInfo")) {
                 int userId = Integer.parseInt(request.getParameter("userId"));
                 Account account = accountDAO.getAccountById(userId);
-if (account != null) {
+                if (account != null) {
                     Gson gson = new Gson();
                     String jsonAccount = gson.toJson(account);
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().write(jsonAccount);
                 }
-            } 
+            }
             // Edit user information
             if (action.equals("edit")) {
                 String userIdParam = request.getParameter("userId");
@@ -162,7 +181,7 @@ if (account != null) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     response.getWriter().write("User ID is missing");
                 }
-            } 
+            }
             // Update user information
             if (action.equals("updateUser")) {
                 String userIdStr = request.getParameter("userId");
@@ -184,7 +203,7 @@ if (account != null) {
                         }
                     } catch (NumberFormatException e) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-response.getWriter().write("Invalid user ID or role.");
+                        response.getWriter().write("Invalid user ID or role.");
                     }
                 } else {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -214,5 +233,23 @@ response.getWriter().write("Invalid user ID or role.");
     @Override
     public String getServletInfo() {
         return "Short description";
+    }
+
+    private String generateRandomPassword() {
+        String upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String combinedChars = upperCaseLetters + lowerCaseLetters + numbers;
+        Random random = new Random();
+        char[] password = new char[8];
+
+        password[0] = upperCaseLetters.charAt(random.nextInt(upperCaseLetters.length()));
+        password[1] = lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length()));
+        password[2] = numbers.charAt(random.nextInt(numbers.length()));
+
+        for (int i = 3; i < 8; i++) {
+            password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
+        }
+        return new String(password);
     }
 }
