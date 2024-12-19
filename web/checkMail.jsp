@@ -22,29 +22,27 @@
                         </div>
                         <div class="card login-page bg-white shadow mt-4 rounded border-0">
                             <div class="card-body">
-                                <h4 class="text-center">Khôi phục mật khẩu</h4>  
+                                <h4 class="text-center">Reset Password</h4>  
                                 <p style="color: red; align-content: center;">
                                     ${requestScope.emailError}
                                 </p>
 
-
-                                <form action="forgotpass" method="POST" class="login-form mt-4" onSubmit="document.getElementById('submit').disabled = true;">
+                                <form action="user?action=recoverpass" method="POST" class="login-form mt-4" onSubmit="document.getElementById('submit').disabled = true;">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <p class="text-muted">Hãy nhập email của bạn chúng tôi sẽ gửi mật khẩu mới vào email.</p>
+                                            <p class="text-muted">Please enter your email, we will send a new password to your email.</p>
                                             <div class="mb-3">
                                                 <label class="form-label">Email <span class="text-danger">*</span></label>
-                                                <input value="${email}" oninvalid="CheckEmail(this);" oninput="CheckEmail(this);" type="email" class="form-control" name="email" required="">
-
+                                                <input type="email" class="form-control" placeholder="Email" name="email" id="email" value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>">
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="d-grid">
-                                                <button id="submit" class="btn btn-primary">Xác nhận</button>
+                                                <button id="submit" class="btn btn-primary">Reset Password</button>
                                             </div>
                                         </div>
-                                        <div class="mx-auto">
-                                            <p class="mb-0 mt-3"><a href="login.jsp" class="text-dark h6 mb-0">Đăng nhập</a></p>
+                                        <div class="col-12 text-center">
+                                            <p class="mb-0 mt-3"><small class="text-dark me-2">Remember your password?</small> <a href="user?action=login" class="text-dark fw-bold">Sign in</a></p>
                                         </div>
                                     </div>
                                 </form> 

@@ -9,19 +9,22 @@ package model;
  * @author sodok
  */
 public class Setting {
+
     private int setting_id;
     private String setting_name;
     private String setting_type;
     private String description;
+    private boolean status;
 
     public Setting() {
     }
 
-    public Setting(int setting_id, String setting_name, String setting_type, String description) {
+    public Setting(int setting_id, String setting_name, String setting_type, String description, boolean status) {
         this.setting_id = setting_id;
         this.setting_name = setting_name;
         this.setting_type = setting_type;
         this.description = description;
+        this.status = status;
     }
 
     public int getSetting_id() {
@@ -54,5 +57,17 @@ public class Setting {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public String getStatusString() {
+        return status ? "Active" : "Block";
     }
 }

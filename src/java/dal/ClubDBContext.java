@@ -175,6 +175,26 @@ public class ClubDBContext extends DBContext {
         return email;
     }
 
+    public String getAdminEmailByStatus(int status) {
+        String email = null;
+        String sql = "SELECT email FROM [user] WHERE status = ?";
+        try (Connection conn = getConnection(); PreparedStatement stm = conn.prepareStatement(sql)) {
+
+            stm.setInt(1, status);
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    email = rs.getString("email");
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ClubDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return email;
+    }
+
     public List<ClubMember> getClubMembersByClubId(int clubId) {
         List<ClubMember> list = new ArrayList<>();
         String sql = "SELECT cm.club_id, cm.user_id, cm.email, cm.speciality_id, cm.status, cm.active_status, u.full_name, u.user_name, u.avatar_url "
@@ -479,9 +499,60 @@ public class ClubDBContext extends DBContext {
         return result;
     }
 
+    public boolean updateDepartmentInfo(int deptId, String description, String currentProjects, String regularMeetingSchedule) {
+        String sql = "UPDATE department SET description = ?, current_projects = ?, regular_meeting_schedule = ? WHERE department_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, description);
+            stmt.setString(2, currentProjects);
+            stmt.setString(3, regularMeetingSchedule);
+            stmt.setInt(4, deptId);
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ClubDBContext.class.getName()).log(Level.SEVERE, "Error updating department information", ex);
+            return false;
+        }
+    }
+
+    public int getDepartmentIdBySpecialityId(int specialityId) {
+        int departmentId = -1; // Default value if not found
+        String sql = "SELECT department_id FROM department WHERE speciality_id = ?";
+
+        try (PreparedStatement stm = conn.prepareStatement(sql)) {
+            stm.setInt(1, specialityId);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    departmentId = rs.getInt("department_id");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClubDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return departmentId;
+    }
+
+    public int getDepartmentIdBySpecialityIdAndClubId(int specialityId, int clubId) {
+        int departmentId = -1;
+        String sql = "SELECT department_id FROM department WHERE speciality_id = ? AND club_id = ?";
+
+        try (PreparedStatement stm = conn.prepareStatement(sql)) {
+            stm.setInt(1, specialityId);
+            stm.setInt(2, clubId);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    departmentId = rs.getInt("department_id");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClubDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return departmentId;
+    }
+
     public static void main(String[] args) {
         ClubDBContext dao = new ClubDBContext();
-        
-
+        dao.getAdminEmailByStatus(1);
     }
 }

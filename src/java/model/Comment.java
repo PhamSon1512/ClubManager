@@ -9,6 +9,9 @@ public class Comment {
     private String content;
     private Timestamp createdAt;
    private String userName;
+   private boolean isEdited;
+
+   
     // Constructors, getters, and setters
     public Comment() {}
 
@@ -21,6 +24,13 @@ public class Comment {
         this.userName = userName;
     }
 
+    public boolean isEdited() {
+        return isEdited;
+    }
+
+    public void setEdited(boolean edited) {
+        isEdited = edited;
+    }
     public String getUserName() {
         return userName;
     }

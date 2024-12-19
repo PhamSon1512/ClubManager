@@ -18,6 +18,25 @@
             font-family: 'Roboto', sans-serif;
         }
 
+        .wrapper {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #008080;
+            color: white;
+            position: fixed;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .main-content {
+            margin-left: 270px;
+            padding: 20px;
+            width: calc(100% - 270px);
+        }
+
         .container {
             background-color: #f7f7f7;
             padding: 20px;
@@ -146,52 +165,56 @@
         </a>
     </div>
 
-    <jsp:include page="layout/sidebar.jsp"/>
-    
-    <div class="container" style="margin-top: -20px;">
-        <div class="text-sm-end" style="margin-top: 20px;">
-            <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="fa fa-plus"></i> <span>Add New Club</span></a>
-        </div>
+    <div class="wrapper">
+        <jsp:include page="layout/sidebar.jsp"/>
+        
+        <div class="main-content">
+            <div class="text-sm-end" style="margin-top: 20px;">
+                <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="fa fa-plus"></i> <span>Add New Club</span></a>
+            </div>
 
-        <div class="table-title">
-            <h2>Manage <b>Clubs</b></h2>
-        </div>
+            <div class="container" style="margin-top: -20px;">
+                <div class="table-title">
+                    <h2>Manage <b>Clubs</b></h2>
+                </div>
 
-        <div class="card-deck">
-            <c:choose>
-                <c:when test="${not empty listClubs}">
-                    <c:forEach items="${listClubs}" var="P">
-                        <div class="card h-100 shadow-sm">
-                            <a href="detail?club_id=${P.club_id}">
-                                <img class="card-img-top img-responsive" src="${P.imageUrl}" alt="Club Image" />
-                            </a>
-                            <div class="card-body">
-                                <h5 class="fw-bolder">${P.name}</h5>
-                                <span class="text-muted">${P.code}</span>
-                            </div>
-                            <div class="card-footer bg-transparent">
-                                <a class="btn btn-outline-dark mt-auto" href="registerclub">Join</a>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </c:when>
-                <c:otherwise>
-                    <c:forEach items="${listAllClubs}" var="P">
-                        <div class="card h-100 shadow-sm">
-                            <a href="detail?club_id=${P.club_id}">
-                                <img class="card-img-top img-responsive" src="${P.imageUrl}" alt="Club Image" />
-                            </a>
-                            <div class="card-body">
-                                <h5 class="fw-bolder">${P.name}</h5>
-                                <span class="text-muted">${P.code}</span>
-                            </div>
-                            <div class="card-footer bg-transparent">
-                                <a class="btn btn-outline-dark mt-auto" href="registerclub">Join</a>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </c:otherwise>
-            </c:choose>
+                <div class="card-deck">
+                    <c:choose>
+                        <c:when test="${not empty listClubs}">
+                            <c:forEach items="${listClubs}" var="P">
+                                <div class="card h-100 shadow-sm">
+                                    <a href="detail?club_id=${P.club_id}">
+                                        <img class="card-img-top img-responsive" src="${P.imageUrl}" alt="Club Image" />
+                                    </a>
+                                    <div class="card-body">
+                                        <h5 class="fw-bolder">${P.name}</h5>
+                                        <span class="text-muted">${P.code}</span>
+                                    </div>
+                                    <div class="card-footer bg-transparent">
+                                        <a class="btn btn-outline-dark mt-auto" href="registerclub">Join</a>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach items="${listAllClubs}" var="P">
+                                <div class="card h-100 shadow-sm">
+                                    <a href="detail?club_id=${P.club_id}">
+                                        <img class="card-img-top img-responsive" src="${P.imageUrl}" alt="Club Image" />
+                                    </a>
+                                    <div class="card-body">
+                                        <h5 class="fw-bolder">${P.name}</h5>
+                                        <span class="text-muted">${P.code}</span>
+                                    </div>
+                                    <div class="card-footer bg-transparent">
+                                        <a class="btn btn-outline-dark mt-auto" href="registerclub">Join</a>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
         </div>
     </div>
 

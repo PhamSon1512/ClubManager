@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -89,48 +89,51 @@
                     </div>
 
                     <div class="col-lg-7 col-md-6 mt-4 pt-2 mt-sm-0 pt-sm-0">
-                        <div class="custom-form rounded shadow p-4">
-                            <h5 class="mb-4">Get in touch!</h5>
-                            <form method="post" name="myForm" onsubmit="return validateForm()">
-                                <p id="error-msg"></p>
-                                <div id="simple-msg"></div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Your Name <span class="text-danger">*</span></label>
-                                            <input name="name" id="name" type="text" class="form-control border rounded">
-                                        </div>
-                                    </div>
+    <div class="custom-form rounded shadow p-4">
+        <h5 class="mb-4">Get in touch!</h5>
 
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Email <span class="text-danger">*</span></label>
-                                            <input name="email" id="email" type="email" class="form-control border rounded" >
-                                        </div> 
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Titles</label>
-                                            <input name="subject" id="subject" class="form-control border rounded" >
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Comment <span class="text-danger">*</span></label>
-                                            <textarea name="comments" id="comments" rows="4" class="form-control border rounded"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <button type="submit" id="submit" name="send" class="btn btn-primary">Send message</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+        <form method="post" action="contact" name="myForm" onsubmit="return validateForm()">
+            <p id="error-msg"></p>
+            <div id="simple-msg"></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Your Name <span class="text-danger">*</span></label>
+                        <input name="full_name" id="full_name" type="text" class="form-control border rounded" >
+                        <c:if test="${not empty fullNameError}">
+                            <small class="text-danger">${fullNameError}</small>
+                        </c:if>
                     </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input name="email" id="email"  class="form-control border rounded" >
+                        <c:if test="${not empty emailError}">
+                            <small class="text-danger">${emailError}</small>
+                        </c:if>
+                    </div> 
+                </div>
+
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label class="form-label">Message <span class="text-danger">*</span></label>
+                        <textarea name="message" id="message" rows="4" class="form-control border rounded" ></textarea>
+                        <c:if test="${not empty messageError}">
+                            <small class="text-danger">${messageError}</small>
+                        </c:if>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="submit" id="submit" name="send" class="btn btn-primary">Send message</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
                 </div>
             </div>
 
@@ -139,7 +142,7 @@
                     <div class="col-12 p-0">
                         <div class="card map border-0">
                             <div class="card-body p-0">
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.506341458941!2d105.52528919999999!3d21.012416699999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135abc60e7d3f19%3A0x2be9d7d0b5abcbf4!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBGUFQgSMOgIE7hu5lp!5e0!3m2!1svi!2s!4v1716286607018!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>                            </div>
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.506341458941!2d105.52528919999999!3d21.012416699999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135abc60e7d3f19%3A0x2be9d7d0b5abcbf4!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBGUFQgSMOgIE7hu5lp!5e0!3m2!1svi!2s!4v1716286607018!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>                            </div>
                         </div>
                     </div>
                 </div>
@@ -149,10 +152,27 @@
         <jsp:include page="layout/footer.jsp"/>
 
         <a href="#" onclick="topFunction()" id="back-to-top" class="btn btn-icon btn-pills btn-primary back-to-top"><i data-feather="arrow-up" class="icons"></i></a>
-        
+
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <script src="assets/js/feather.min.js"></script>
         <script src="assets/js/app.js"></script>
+
+        <script src="assets/js/sweetalert.min.js"></script>
+
+        <c:if test="${not empty successMessage}">
+            <script>
+            $(document).ready(function () {
+                swal("Success", "${successMessage}", "success");
+            });
+            </script>
+        </c:if>
+
+
+
+
+
+
+
 
     </body>
 

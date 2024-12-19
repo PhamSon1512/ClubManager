@@ -1,4 +1,4 @@
-    <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
@@ -12,23 +12,30 @@
                 <jsp:include page="../admin/layout/headmenu.jsp"/>
                 <div class="container-fluid">
                     <div class="layout-specing">
-                        <div class="row">
-                            <div class="col-md-10 row">
-                                <div class="col-md-4">
-                                    <a href="account?action=all"><h5 class="mb-0">Account</h5></a>
+                        <div class="row">   
+                            <div class="col-md-12 row">
+                                <div class="col-md-3">
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <a href="account?action=all"><h5 class="mb-0">Account</h5></a>
+                                    </div>
                                     <div id="statusMessage" class="alert" role="alert" style="display: none;"></div>
                                     <c:if test="${not empty param.success}">    
                                         <div class="alert alert-success" role="alert">
-                                            User added successfully.
+                                            User added successfully.        
                                         </div>
                                     </c:if>
-                                    <c:if test="${not empty successMessage}">
+                                    <c:if test="${not empty successMessage}">s
                                         <div class="alert alert-success" role="alert">
                                             ${successMessage}
                                         </div>
+                                    </c:if> 
+                                    <c:if test="${not empty emailError}">
+                                        <div class="alert alert-danger" role="alert">
+                                            ${emailError}
+                                        </div>
                                     </c:if>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <div class="search-bar p-0 d-lg-block ms-2">                                                        
                                         <div id="search" class="menu-search mb-0">
                                             <form action="account?action=search" method="POST" id="searchform" class="searchform">
@@ -40,16 +47,30 @@
                                         </div>
                                     </div> 
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="justify-content-md-end row">
-                                    <div class="d-grid">
-                                        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New User</a>
+
+                                <div class="col-md-2">
+                                    <div class="dropdown">
+                                        <button style="color: #000; background-color: #215AEE; border:none; font-family: sans-serif;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="uil uil-filter"></i>Filter
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            <li><a class="dropdown-item" href="account?action=all">All</a></li>
+                                            <li><a class="dropdown-item" href="account?action=filter&role=0">User</a></li>
+                                            <li><a class="dropdown-item" href="account?action=filter&role=1">Admin</a></li>
+                                            <li><a class="dropdown-item" href="account?action=filter&role=2">Manager</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="justify-content-md-end row">
+                                        <div class="d-grid">
+                                            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New User</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-12 mt-4">
                                 <div class="table-responsive bg-white shadow rounded">
@@ -163,6 +184,42 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- Filter Modal -->
+                                        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="filterModalLabel">Filter Accounts</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="filterForm">
+                                                            <div class="mb-3">
+                                                                <label for="filterRole" class="form-label">Role</label>
+                                                                <select class="form-control" id="filterRole" name="role">
+                                                                    <option value="">All Roles</option>
+                                                                    <option value="0">User</option>
+                                                                    <option value="1">Admin</option>
+                                                                    <option value="2">Manager</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="filterStatus" class="form-label">Status</label>
+                                                                <select class="form-control" id="filterStatus" name="status">
+                                                                    <option value="">All Statuses</option>
+                                                                    <option value="1">Active</option>
+                                                                    <option value="0">Blocked</option>
+                                                                </select>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-primary" id="applyFilter">Apply Filter</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         </tbody>
                                     </table>
                                 </div>
@@ -266,7 +323,7 @@
                     statusToggleButton = $(this);
                     userId = statusToggleButton.data('user-id');
                     var currentStatus = statusToggleButton.data('status');
-                    newStatus = currentStatus == 1 ? 0 : 1;
+                    newStatus = currentStatus === 1 ? 0 : 1;
 
                     // Show confirmation modal
                     $('#confirmStatusModal').modal('show');
@@ -292,7 +349,7 @@
                                     statusToggleButton.text('Active');
                                 } else {
                                     statusToggleButton.removeClass('btn-success').addClass('btn-danger');
-                                    statusToggleButton.text('Deactive');
+                                    statusToggleButton.text('Block');
                                 }
                                 statusToggleButton.data('status', newStatus);
 
@@ -353,7 +410,10 @@
                             if (response === 'success') {
                                 $('#editUserModal').modal('hide');
                                 showStatusMessage('User information updated successfully.', 'success');
-                                updateUserInTable();
+                                // Reload the page after a short delay
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 3000);
                             } else {
                                 showStatusMessage('Error updating user information.', 'danger');
                             }
@@ -363,27 +423,51 @@
                         }
                     });
                 });
-
-                function updateUserInTable() {
-                    var userId = $('#editUserId').val();
-                    var fullname = $('#editFullname').val();
-                    var username = $('#editUsername').val();
-                    var phone = $('#editPhone').val();
-                    var role = $('#editRole option:selected').text();
-
-                    var $row = $('tr[data-user-id="' + userId + '"]');
-                    $row.find('td:eq(1)').text(fullname);
-                    $row.find('td:eq(2)').text(username);
-                    $row.find('td:eq(4)').text(phone);
-                    $row.find('td:eq(5)').text(role);
-                }
-
                 // Hàm hiển thị thông báo
                 function showStatusMessage(message, type) {
                     var statusMessage = $('#statusMessage');
                     statusMessage.removeClass('alert-success alert-danger').addClass('alert-' + type);
                     statusMessage.text(message);
                     statusMessage.show();
+                }
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                $('#applyFilter').click(function () {
+                    var role = $('#filterRole').val();
+                    var status = $('#filterStatus').val();
+
+                    $.ajax({
+                        url: 'account',
+                        method: 'GET',
+                        data: {
+                            action: 'filter',
+                            role: role,
+                            status: status
+                        },
+                        success: function (response) {
+                            $('#filterModal').modal('hide');
+                            $('tbody').html(response);
+                            // Reinitialize event handlers for newly added elements
+                            initializeEventHandlers();
+                        },
+                        error: function () {
+                            alert('An error occurred while filtering accounts.');
+                        }
+                    });
+                });
+
+                function initializeEventHandlers() {
+                    // Re-attach event handlers for status toggle buttons
+                    $('.status-toggle').off('click').on('click', function () {
+                        // Your existing status toggle logic here
+                    });
+
+                    // Re-attach event handlers for edit user buttons
+                    $('.edit-user').off('click').on('click', function (e) {
+                        // Your existing edit user logic here
+                    });
                 }
             });
         </script>

@@ -46,20 +46,48 @@ public class UserRegisterClub extends HttpServlet {
         String committees = request.getParameter("commit");
         String description = request.getParameter("description");
         String contextPath = request.getContextPath();
+        boolean isValid = true;
+        if (name == null || name.trim().isEmpty()) {
+            isValid = false;
+            request.setAttribute("NameError", "Name is required.");
+        }
+        if (email == null || email.trim().isEmpty()) {
+            isValid = false;
+            request.setAttribute("emailError", "Email is required.");
+        } else if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            isValid = false;
+            request.setAttribute("emailError", "Invalid email format.");
+        }
+        if (purpose == null || purpose.trim().isEmpty()) {
+            isValid = false;
+            request.setAttribute("purposeError", "Purpose is required.");
+        }
+         if (committees == null || committees.trim().isEmpty()) {
+            isValid = false;
+            request.setAttribute("committeesError", "Committees is required.");
+        }
+          if (description == null || description.trim().isEmpty()) {
+            isValid = false;
+            request.setAttribute("descriptionError", "Description is required.");
+        }
+
+        if (!isValid) {
+            request.getRequestDispatcher("contact.jsp").forward(request, response);
+            return;
+        }
 
         AccountDAO dao = new AccountDAO();
         boolean emailExists = dao.checkEmailExists(email);
         ClubDBContext pdb = new ClubDBContext();
         Club club = pdb.getClubById(clubId);
-      
-        
+
         request.setAttribute("clubId", club);
-          boolean emailExistClub= pdb.checkEmailAndClubId(email, clubId);
-          if(emailExistClub){
-              request.setAttribute("errorMessages", "The provided email have exist in our records.");
+        boolean emailExistClub = pdb.checkEmailAndClubId(email, clubId);
+        if (emailExistClub) {
+            request.setAttribute("errorMessages", "The provided email have exist in our records.");
             request.getRequestDispatcher("userRegisterClub.jsp").forward(request, response);
             return;
-          }
+        }
         if (!emailExists) {
             request.setAttribute("errorMessage", "The provided email does not exist in our records.");
             request.getRequestDispatcher("userRegisterClub.jsp").forward(request, response);

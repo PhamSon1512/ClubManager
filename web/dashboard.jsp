@@ -25,7 +25,6 @@
                 <div class="container-fluid">
                     <div class="layout-specing">
                         <h5 class="mb-0">Dashboard</h5>
-                        <!-- comment -->
                         <div class="row">
                             <div class="col-xl-6 col-lg-4 col-md-4 mt-4">
                                 <div class="card features feature-primary rounded border-0 shadow p-4">
@@ -92,7 +91,7 @@
                                         </div>
                                         <div class="flex-1 ms-2">
                                             <h5 class="mb-0">${appointment}</h5>
-                                            <p class="text-muted mb-0">Register Club</p>
+                                            <p class="text-muted mb-0">Club Register</p>
                                         </div>
                                     </div>
                                 </div>
@@ -100,97 +99,22 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-xl-8 col-lg-7 mt-4">
+                            <div class="col-xl-12 col-lg-12 mt-4">
                                 <div class="card shadow border-0 p-4">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h6 class="align-items-center mb-0">Thống kê số lịch hẹn</h6>
+                                        <h6 class="align-items-center mb-0">Statistics of new events</h6>
                                         <div class="mb-0 position-relative">
                                             <select onchange="Astatistic(this.value)" class="form-select form-control" id="yearchart">
-                                                <option <c:if test="${sessionScope.atype == '3day'}"> selected </c:if> value="3day">3 ngày gần đây</option>
-                                                <option <c:if test="${sessionScope.atype == '7day'}"> selected </c:if> value="7day">7 Ngày gần đây</option>
-                                                <option <c:if test="${sessionScope.atype == '14day'}"> selected </c:if> value="14day">14 ngày gần đây</option>
+                                                <option <c:if test="${sessionScope.atype == '3day'}"> selected </c:if> value="3day">Last 3 days</option>
+                                                <option <c:if test="${sessionScope.atype == '7day'}"> selected </c:if> value="7day">Last 7 days</option>
+                                                <option <c:if test="${sessionScope.atype == '14day'}"> selected </c:if> value="14day">Last 14 days</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div id="dashboard" class="apex-chart"></div>
                                     </div>
                                 </div>
-
-                                <div class="col-xl-4 col-lg-5 mt-4">
-                                    <div class="card shadow border-0 p-4">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <h6 class="align-items-center mb-0">Doanh thu</h6>
-                                            <div class="mb-0 position-relative">
-                                                <select onchange="Rstatistic(this.value)" class="form-select form-control" id="dailychart">
-                                                    <option <c:if test="${sessionScope.rtype == 'today'}"> selected </c:if> value="today" >Hôm nay</option>
-                                                <option <c:if test="${sessionScope.rtype == '7day'}"> selected </c:if> value="7day">7 ngày gần đây</option>
-                                                <option <c:if test="${sessionScope.rtype == '14day'}"> selected </c:if> value="14day">14 ngày gần đây</option>
-                                                <option <c:if test="${sessionScope.rtype == 'month'}"> selected </c:if> value="month">Tháng này</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div id="department" class="apex-chart"></div>
-                                    </div>
-                                </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-xl-6 col-lg-6 mt-4">
-                                    <div class="card border-0 shadow rounded">
-                                        <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
-                                            <h6 class="mb-0"><i class="uil uil-calender text-primary me-1 h5"></i>Danh sách lịch hẹn dịch vụ hôm nay</h6>
-                                        </div>
-                                        <table class="list-unstyled mb-0 p-4">
-                                            <thead>
-                                                <tr>
-                                                    <th class="border-bottom p-3" >Bệnh nhân</th>
-                                                    <th class="border-bottom p-3" >Dịch vụ</th>
-                                                    <th class="border-bottom p-3" >Thời gian</th>
-                                                    <th class="border-bottom p-3" >Trạng thái</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            <c:forEach items="${reservationlist}" var="r">
-                                                <tr>
-                                                    <td class="p-3">${r.patient.account.username}</td>
-                                                    <td class="p-3">${r.service.title}</td>
-                                                    <td class="p-3">${r.time}</td>
-                                                    <td class="p-3">${r.status}</td>
-                                                </tr>
-                                            </c:forEach>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 mt-4">
-                                <div class="card border-0 shadow rounded">
-                                    <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
-                                        <h6 class="mb-0"><i class="uil uil-calender text-primary me-1 h5"></i>Danh sách lịch hẹn hôm nay</h6>
-                                    </div>
-
-                                    <table class="list-unstyled mb-0 p-4">
-                                        <thead>
-                                            <tr>
-                                                <th class="border-bottom p-3" >Bệnh nhân</th>
-                                                <th class="border-bottom p-3" >Bác sĩ</th>
-                                                <th class="border-bottom p-3" >Thời gian</th>
-                                                <th class="border-bottom p-3" >Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <c:forEach items="${appointmentlist}" var="a">
-                                                <tr>
-                                                    <td class="p-3">${a.patient.account.username}</td>
-                                                    <td class="p-3">${a.doctor.doctor_name}</td>
-                                                    <td class="p-3">${a.time}</td>
-                                                    <td class="p-3">${a.status}</td>
-                                                </tr>
-                                            </c:forEach>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <jsp:include page="admin/layout/footer.jsp"/>
